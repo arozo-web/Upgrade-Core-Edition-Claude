@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salesforce Core Edition + Claude Beta | Alfredo Rozo</title>
+<meta name="description" content="Descubre la nueva Core Edition de Salesforce para Sales y Service Cloud, y empieza a usar Claude en Salesforce (Beta gratuita) con 37 skills pre-diseñados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+<style>
+/* =========================================================
+   TOKENS
+   ========================================================= */
+:root{
+  --blue:#0176D3; --blue-600:#0B5CAB; --blue-50:#EAF5FE;
+  --navy:#032D60; --navy-2:#001639;
+  --gray:#F3F3F3; --gray-2:#F8FAFC; --line:#E3E8EF; --ink:#16202C; --muted:#5C6773;
+  --sales:#1B8265; --sales-2:#16A370; --sales-bg:#E8F6F0;
+  --svc:#A61C5C; --svc-2:#C0144B; --svc-bg:#FBEAF1;
+  --wa:#25D366; --wa-600:#1EBE5A;
+  --amber:#92400E; --amber-bg:#FFF7E6; --amber-line:#F5B544;
+  --orange:#A35400; --orange-bg:#FFF1E0;
+  --radius:12px;
+  --shadow:0 1px 2px rgba(3,45,96,.06),0 8px 24px rgba(3,45,96,.08);
+  --shadow-lg:0 6px 12px rgba(3,45,96,.08),0 22px 44px rgba(3,45,96,.16);
+  --hdr-h:116px;
+  --acc:var(--blue); --acc2:#4BB4FF; --acc-bg:var(--blue-50);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter','Roboto','Salesforce Sans',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:#fff;line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--blue);text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+button:focus-visible,a:focus-visible{outline:3px solid rgba(1,118,211,.45);outline-offset:2px;border-radius:8px}
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 24px}
+svg.i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* =========================================================
+   HEADER + CONTACT BAR (sticky)
+   ========================================================= */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.9);-webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--line)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand img{height:34px;width:auto}
+.brand-fallback{display:none;font-weight:800;color:var(--blue);font-size:20px}
+.brand-sep{width:1px;height:26px;background:var(--line)}
+.brand-tag{font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.contact-bar{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.cb-mail,.cb-wa{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;border-radius:999px;font-size:14px;transition:all .2s}
+.cb-mail{padding:0 14px;border:1px solid var(--line);font-weight:500;color:var(--navy);background:#fff}
+.cb-mail:hover{border-color:var(--blue);color:var(--blue)}
+.cb-mail svg{font-size:17px;color:var(--blue)}
+.cb-wa{padding:0 16px;background:var(--wa);color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(37,211,102,.35)}
+.cb-wa:hover{background:var(--wa-600);transform:translateY(-1px)}
+.cb-wa svg{font-size:18px}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;padding:13px 16px 15px;font-size:15px;font-weight:600;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:8px;transition:color .2s}
+.tab::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--blue);transform:scaleX(0);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.tab:hover{color:var(--navy)}
+.tab.active{color:var(--blue)}
+.tab.active::after{transform:scaleX(1)}
+.tab svg{font-size:17px}
+.tab .mini{font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.05em;color:#fff}
+.mini.b{background:var(--blue)} .mini.g{background:var(--sales-2)}
+.t-short{display:none}
+
+/* =========================================================
+   GENERIC
+   ========================================================= */
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both}
+.subpanel{display:none}
+.subpanel.active{display:block;animation:fadeSlide .4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+
+.section{padding:64px 0}
+.section.alt{background:var(--gray-2)}
+.section.tight{padding:40px 0}
+.sec-head{max-width:780px;margin-bottom:34px}
+.sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.kicker{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.h2{font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.025em;line-height:1.12;color:var(--navy);margin:8px 0 12px}
+.lead{font-size:17px;color:var(--muted)}
+.note{font-size:13.5px;color:var(--muted);margin-top:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;transition:transform .25s ease,box-shadow .25s ease}
+.reveal{opacity:0;transform:translateY(18px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease}
+.card:hover,.card.reveal.in:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.card.static:hover,.card.static.reveal.in:hover{transform:none;box-shadow:var(--shadow)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font-weight:700;font-size:15px;transition:transform .2s,box-shadow .2s,background .2s,color .2s;white-space:nowrap;text-align:center}
+.btn svg{font-size:18px}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(1,118,211,.32)}
+.btn-primary:hover{background:var(--blue-600);transform:translateY(-2px);box-shadow:0 12px 26px rgba(1,118,211,.4)}
+.btn-light{background:#fff;color:var(--navy)}
+.btn-light:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+.btn-ghost{border:1px solid rgba(255,255,255,.35);color:#fff}
+.btn-ghost:hover{background:rgba(255,255,255,.12)}
+.btn-outline{border:1.5px solid var(--blue);color:var(--blue);background:#fff}
+.btn-outline:hover{background:var(--blue);color:#fff}
+.btn-wa{background:var(--wa);color:#fff;box-shadow:0 8px 20px rgba(37,211,102,.35)}
+.btn-wa:hover{background:var(--wa-600);transform:translateY(-2px)}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-navy:hover{background:#06417f;transform:translateY(-2px)}
+.btn-lg{min-height:58px;padding:0 30px;font-size:17px}
+.btn[disabled]{opacity:.6;cursor:wait;transform:none}
+
+.callout{display:flex;gap:12px;align-items:flex-start;border-radius:10px;padding:14px 16px;font-size:14.5px;line-height:1.5;margin-top:14px}
+.callout svg{font-size:20px;margin-top:1px}
+.callout.amber{background:var(--amber-bg);border:1px solid var(--amber-line);color:var(--amber)}
+.callout.teal{background:linear-gradient(135deg,#E8F6F0,#EAF5FE);border:1px solid #9ED8C3;color:#0B5446}
+.callout.gray{background:#F4F5F7;border:1px solid #D8DDE6;color:#3E4A59;font-size:13.5px}
+.callout.blue{background:var(--blue-50);border:1px solid #9CCBF3;color:var(--blue-600)}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero{position:relative;overflow:hidden;color:#fff;padding:72px 0 84px;
+  background:radial-gradient(1000px 480px at 88% -10%,rgba(1,118,211,.6),transparent 60%),
+             radial-gradient(700px 380px at -8% 110%,rgba(22,163,112,.28),transparent 60%),
+             linear-gradient(135deg,var(--navy-2),var(--navy) 55%,#0A3F86)}
+.hero.claude{background:radial-gradient(900px 460px at 90% -10%,rgba(1,118,211,.55),transparent 60%),
+             radial-gradient(700px 380px at -8% 110%,rgba(217,119,87,.28),transparent 60%),
+             linear-gradient(135deg,var(--navy-2),var(--navy) 55%,#0A3F86)}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse at 70% 30%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at 70% 30%,#000 20%,transparent 75%)}
+.hero>.container{position:relative}
+.hero-grid{display:grid;grid-template-columns:1.25fr .9fr;gap:48px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#A9D8FF;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:6px 12px;border-radius:999px}
+.hero h1{font-size:clamp(34px,5vw,58px);line-height:1.05;letter-spacing:-.03em;font-weight:800;margin:18px 0}
+.grad{background:linear-gradient(90deg,#6CC4FF,#4BE0B0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lead{color:rgba(255,255,255,.84);font-size:18px;max-width:620px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.glass{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:28px}
+.price-note{display:flex;gap:12px;align-items:flex-start;margin:-6px -6px 20px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(255,209,102,.22),rgba(75,224,176,.14));border:1px solid rgba(255,209,102,.55)}
+.pn-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#FFE7A3,#FFD166);color:#7A4A00;font-size:18px;flex-shrink:0}
+.price-note b{display:block;font-size:14.5px;font-weight:800;color:#FFE7A3;line-height:1.3}
+.price-note div span{display:block;font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.88);margin-top:3px}
+.price-card small{font-size:13px;font-weight:600;color:#A9D8FF;letter-spacing:.06em;text-transform:uppercase}
+.price-big{display:flex;align-items:flex-end;gap:6px;margin:6px 0 14px}
+.price-big strong{font-size:76px;font-weight:800;letter-spacing:-.04em;line-height:.9}
+.price-big span{font-size:15px;color:rgba(255,255,255,.75);padding-bottom:8px}
+.price-list{list-style:none;display:grid;gap:10px;font-size:14.5px}
+.price-list li{display:flex;gap:10px;align-items:center}
+.price-list .dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:rgba(75,224,176,.2);color:#4BE0B0;font-size:13px;flex-shrink:0}
+.hero-stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:34px}
+.hero-stats div strong{display:block;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.hero-stats div span{font-size:13px;color:rgba(255,255,255,.7)}
+
+/* =========================================================
+   PILLS (sub-tabs)
+   ========================================================= */
+.pills-wrap{position:sticky;top:var(--hdr-h);z-index:50;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px 0}
+.pills{display:inline-flex;gap:4px;padding:5px;background:var(--gray);border-radius:999px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;font-weight:600;font-size:14px;color:var(--muted);white-space:nowrap;transition:all .25s}
+.pill svg{font-size:16px}
+.pill:hover{color:var(--navy)}
+.pill.active{background:#fff;color:var(--blue);box-shadow:0 2px 10px rgba(3,45,96,.12)}
+.pill .cnt{font-size:11px;font-weight:800;background:var(--blue-50);color:var(--blue);padding:2px 7px;border-radius:999px}
+
+/* =========================================================
+   EDITION BLOCKS (Sales / Service)
+   ========================================================= */
+.editions{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.edition{--acc:var(--sales);--acc2:var(--sales-2);--acc-bg:var(--sales-bg);position:relative;overflow:hidden;border-radius:20px;border:1px solid #CDE9DD;background:linear-gradient(180deg,var(--acc-bg),#fff 320px);padding:28px;display:flex;flex-direction:column;gap:18px}
+.edition.service{--acc:var(--svc);--acc2:var(--svc-2);--acc-bg:var(--svc-bg);border-color:#F1CADB}
+.edition::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+.ed-badge{display:inline-flex;gap:8px;align-items:center;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);background:#fff;border:1px solid var(--acc);padding:5px 11px;border-radius:999px}
+.ed-badge svg{font-size:15px}
+.ed-head h3{font-size:25px;line-height:1.2;font-weight:800;color:var(--navy);margin:14px 0 10px;letter-spacing:-.02em}
+.ed-head h3 b{color:var(--acc)}
+.ed-head p{font-size:15.5px;color:#3E4A59}
+.ed-path{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.ed-path span{font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+.ed-path span.to{background:var(--acc);border-color:var(--acc);color:#fff}
+.ed-path svg{color:var(--acc)}
+.sub-h{font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 0 10px;display:flex;align-items:center;gap:8px}
+.sub-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.price-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;margin-bottom:18px}
+.price-row small{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.price-row b{font-size:20px;font-weight:800}
+.price-row .pr{text-align:right}
+.price-row .pr strong{font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.price-row .pr span{display:block;font-size:12.5px;opacity:.85}
+.chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin-bottom:16px}
+.chips li{font-size:13px;font-weight:600;padding:7px 11px;border-radius:8px;background:var(--gray);color:var(--navy);display:inline-flex;gap:6px;align-items:center}
+.chips li svg{color:var(--acc)}
+.checks{list-style:none;display:grid;gap:9px}
+.checks li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.ck{width:20px;height:20px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;flex-shrink:0;font-size:12px;margin-top:2px}
+.checks em{font-style:normal;font-size:12px;color:var(--muted)}
+.dataai{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.dataai div{border:1px dashed var(--acc);border-radius:10px;padding:12px 14px;background:var(--acc-bg)}
+.dataai strong{display:block;font-size:22px;color:var(--acc);font-weight:800;line-height:1.1}
+.dataai span{font-size:12.5px;color:#3E4A59}
+.dataai .lbl{grid-column:1/-1;border:0;background:none;padding:0;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.comp{padding:18px;display:flex;flex-direction:column;gap:8px}
+.comp-ic{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:var(--acc-bg);color:var(--acc);font-size:21px;margin-bottom:4px}
+.comp b{font-size:15px;color:var(--navy);line-height:1.3}
+.comp p{font-size:13.5px;color:var(--muted)}
+.link-more{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:var(--acc);padding:8px 12px;margin-left:-12px;border-radius:8px;transition:gap .2s,background .2s}
+.link-more:hover{gap:10px;background:var(--acc-bg)}
+
+.stack-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
+.stack-from{list-style:none;display:grid;gap:8px}
+.stack-from li{display:flex;flex-direction:column;padding:10px 12px;border-radius:8px;background:var(--gray);font-size:13.5px}
+.stack-from li span{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+.stack-from li b{color:#6B7280;text-decoration:line-through;text-decoration-color:rgba(0,0,0,.35);font-weight:600}
+.stack-arrow{width:46px;height:46px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-size:20px;box-shadow:0 8px 18px rgba(0,0,0,.15)}
+.stack-to{list-style:none;border-radius:12px;background:linear-gradient(160deg,var(--acc),var(--acc2));padding:14px;color:#fff;display:grid;gap:8px}
+.stack-to .core-lbl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.85;padding:0 2px 2px}
+.stack-to li:not(.core-lbl){padding:10px 12px;background:rgba(255,255,255,.16);border-radius:8px;font-weight:600;font-size:13.5px;display:flex;gap:8px;align-items:center}
+.stack-head{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;margin-bottom:8px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stack-head span:nth-child(2){width:46px}
+
+.value-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0}
+.value-item+.value-item{border-top:1px solid var(--line)}
+.value-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-size:22px;flex-shrink:0}
+.value-item h5{font-size:16px;font-weight:800;color:var(--navy)}
+.value-item .tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.value-item .tags span{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--acc-bg);color:var(--acc)}
+.value-item p{font-size:14px;color:#3E4A59}
+
+.pv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+.pv div{padding:14px 8px;border-radius:10px;background:var(--gray)}
+.pv div.hl{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff}
+.pv strong{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.pv span{font-size:12px;font-weight:600;opacity:.85}
+.pv-foot{margin-top:12px;text-align:center;font-size:14px;font-weight:700;color:var(--acc)}
+
+/* Price compare */
+.price-compare{padding:34px;border-radius:20px;background:linear-gradient(180deg,#fff,#F7FAFE)}
+.pc-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:center}
+.pc-table{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pc-table th,.pc-table td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+.pc-table thead th{background:var(--navy);color:#fff;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-weight:700}
+.pc-table tbody tr:nth-child(even) td{background:#FAFBFC}
+.pc-table td:nth-child(2){color:var(--muted)}
+.pc-table td:nth-child(3){font-weight:700;color:var(--blue)}
+.pc-table tfoot td{font-weight:800;font-size:16px;border-bottom:0;background:var(--blue-50)}
+.pc-table tfoot td:nth-child(2){color:#6B7280;text-decoration:line-through}
+.pc-table tfoot td:nth-child(3){color:var(--navy);font-size:18px}
+.savings{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.ring{position:relative;width:180px;height:180px}
+.ring svg{width:180px;height:180px;transform:rotate(-90deg)}
+.ring .ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .ring-txt strong{font-size:44px;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1}
+.ring .ring-txt span{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.ring circle.prog{transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)}
+.savings p{font-size:16px;font-weight:700;color:var(--navy);max-width:320px}
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px}
+.dual .bars-card{--acc:var(--sales);--acc2:var(--sales-2);--acc-bg:var(--sales-bg);border-top:4px solid var(--acc)}
+.dual .bars-card.service{--acc:var(--svc);--acc2:var(--svc-2);--acc-bg:var(--svc-bg)}
+.bars-card h4{font-size:15px;font-weight:800;color:var(--acc);display:flex;gap:8px;align-items:center}
+.barchart{display:flex;align-items:flex-end;justify-content:center;gap:34px;height:230px;padding-top:34px;margin-top:6px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:10px;width:112px;height:100%}
+.bar-track{flex:1;width:100%;display:flex;align-items:flex-end}
+.bar{width:100%;height:0;border-radius:10px 10px 4px 4px;position:relative;transition:height 1.2s cubic-bezier(.2,.8,.2,1)}
+.bar span{position:absolute;top:-30px;left:0;right:0;text-align:center;font-weight:800;font-size:19px;color:var(--navy)}
+.in .bar{height:var(--h)}
+.bar.core{background:linear-gradient(180deg,var(--acc2),var(--acc))}
+.bar.alone{background:repeating-linear-gradient(45deg,#C9D3DF 0 8px,#E3E9F0 8px 16px)}
+.bar-col label{font-size:12.5px;font-weight:700;color:var(--muted);text-align:center;line-height:1.3}
+.bar-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.bar-meta div{background:var(--acc-bg);border-radius:10px;padding:10px 12px;text-align:center}
+.bar-meta strong{display:block;font-size:22px;font-weight:800;color:var(--acc)}
+.bar-meta span{font-size:12.5px;color:#3E4A59}
+
+/* =========================================================
+   WHY MIGRATE (1.B)
+   ========================================================= */
+.upgrade{display:grid;grid-template-columns:1fr 1.2fr 1fr;align-items:center;gap:16px;padding:30px}
+.up-node{border-radius:14px;padding:22px;border:1px solid var(--line);background:var(--gray-2);text-align:center}
+.up-node.core{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:0;box-shadow:0 14px 30px rgba(1,118,211,.3)}
+.up-lbl{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.up-node b{display:block;font-size:22px;font-weight:800;margin:6px 0 4px;letter-spacing:-.01em}
+.up-node small{font-size:13px;opacity:.8}
+.up-line{position:relative;height:6px;border-radius:999px;background:repeating-linear-gradient(90deg,var(--blue) 0 14px,transparent 14px 24px);background-size:24px 6px;animation:dash 1s linear infinite}
+.up-line span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border:1.5px solid var(--blue);color:var(--blue);font-size:13px;font-weight:800;padding:7px 14px;border-radius:999px;white-space:nowrap;box-shadow:var(--shadow)}
+@keyframes dash{to{background-position:24px 0}}
+.feat{display:flex;gap:14px;align-items:flex-start}
+.feat-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--blue-50);color:var(--blue);font-size:21px;flex-shrink:0}
+.feat h4{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.feat p{font-size:14.5px;color:var(--muted)}
+.stat{text-align:left}
+.stat .stat-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;font-size:22px;margin-bottom:14px}
+.stat strong{display:block;font-size:40px;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1}
+.stat strong small{font-size:18px;font-weight:700;color:var(--blue)}
+.stat h4{font-size:15px;font-weight:800;color:var(--navy);margin:8px 0 4px}
+.stat p{font-size:13.5px;color:var(--muted)}
+
+.ba{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+.ba-col{border-radius:16px;padding:26px}
+.ba-col.before{background:#F4F5F7;border:1px solid #DDE1E7}
+.ba-col.after{background:linear-gradient(160deg,var(--navy),var(--blue));color:#fff;box-shadow:0 16px 34px rgba(1,118,211,.28)}
+.ba-col h4{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;margin-bottom:6px}
+.ba-col .ba-sub{font-size:13.5px;opacity:.75;margin-bottom:16px}
+.ba-col ul{list-style:none;display:grid;gap:12px}
+.ba-col li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.ba-col li .mk{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-size:12px;margin-top:1px}
+.before .mk{background:#E4E7EC;color:#8A94A6}
+.after .mk{background:rgba(75,224,176,.22);color:#4BE0B0}
+.ba-mid{display:grid;place-items:center}
+.ba-mid span{width:52px;height:52px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--blue);font-size:22px;box-shadow:var(--shadow)}
+.client-tag{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--navy);background:#fff;border:1px solid var(--line);padding:7px 12px;border-radius:999px;margin-bottom:18px}
+
+.roi{display:grid;grid-template-columns:1fr 1.15fr;gap:22px;align-items:stretch}
+.frag-list{list-style:none;display:grid;gap:10px;margin-top:14px}
+.frag-list li{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 14px;border-radius:10px;background:var(--gray-2);border:1px solid var(--line);font-size:14px}
+.frag-list li .fi{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);color:var(--muted);font-size:17px}
+.frag-list li small{display:block;font-size:12px;color:var(--muted)}
+.frag-list li .chip{font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;background:#FDECEC;color:#B42318}
+.frag-total{display:flex;justify-content:space-between;margin-top:14px;padding:14px;border-radius:10px;background:#FDECEC;color:#7A1C14;font-weight:700;font-size:14px}
+.frag-total.ok{background:var(--blue-50);color:var(--blue-600)}
+.calc{background:linear-gradient(160deg,var(--navy-2),var(--navy));color:#fff;border:0}
+.calc h3{font-size:20px;font-weight:800;margin-bottom:4px}
+.calc .note{color:rgba(255,255,255,.65)}
+.field{margin-top:20px}
+.field label{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:10px;color:rgba(255,255,255,.85)}
+.field label output{font-weight:800;color:#fff;font-size:16px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:rgba(255,255,255,.18);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--blue);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:4px solid var(--blue);cursor:pointer}
+.calc-out{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.calc-out div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:12px 14px}
+.calc-out span{display:block;font-size:12px;color:rgba(255,255,255,.7);font-weight:600}
+.calc-out strong{font-size:20px;font-weight:800}
+.calc-out .big{grid-column:1/-1;background:linear-gradient(135deg,rgba(75,224,176,.25),rgba(1,118,211,.35));border-color:rgba(75,224,176,.5)}
+.calc-out .big strong{font-size:32px;color:#7BF0C8}
+
+.cta-band{border-radius:22px;padding:42px;background:radial-gradient(600px 300px at 90% 0,rgba(75,180,255,.45),transparent 60%),linear-gradient(135deg,var(--navy-2),var(--navy));color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.cta-band h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1.2;max-width:640px}
+.cta-band p{color:rgba(255,255,255,.75);margin-top:8px}
+
+/* =========================================================
+   CLAUDE TAB
+   ========================================================= */
+.claude-id{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.claude-logo{width:64px;height:64px;border-radius:16px;background:#fff;display:grid;place-items:center;padding:12px;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.claude-logo img{width:100%;height:100%;object-fit:contain}
+.claude-logo .fb{display:none;font-weight:800;color:#D97757;font-size:26px}
+.badges{display:flex;gap:8px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;letter-spacing:.1em;padding:7px 14px;border-radius:999px;color:#fff}
+.badge.beta{background:var(--blue);box-shadow:0 6px 16px rgba(1,118,211,.45)}
+.badge.free{background:var(--sales-2);box-shadow:0 6px 16px rgba(22,163,112,.45)}
+.hero-feats{display:grid;gap:12px}
+.hero-feat{display:flex;gap:14px;align-items:center;padding:16px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+.hero-feat .hf-ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.12);font-size:20px;color:#A9D8FF;flex-shrink:0}
+.hero-feat b{display:block;font-size:15px}
+.hero-feat span{font-size:13px;color:rgba(255,255,255,.7)}
+
+/* Stepper */
+.stepper{padding:0;overflow:hidden;border-radius:20px}
+.st-top{padding:26px 28px 6px}
+.st-progress{height:6px;background:var(--gray);border-radius:999px;overflow:hidden}
+.st-bar{height:100%;width:20%;background:linear-gradient(90deg,var(--blue),#4BB4FF);border-radius:999px;transition:width .55s cubic-bezier(.2,.8,.2,1)}
+.st-dots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;list-style:none;margin-top:18px}
+.st-dot{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-size:12.5px;font-weight:600;color:var(--muted);padding:6px 2px;width:100%;border-radius:10px;transition:color .2s}
+.st-dot .n{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--gray);color:var(--muted);font-weight:800;font-size:15px;transition:all .3s;border:2px solid transparent}
+.st-dot.done .n{background:var(--blue);color:#fff}
+.st-dot.active .n{background:#fff;border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 6px rgba(1,118,211,.13)}
+.st-dot.active{color:var(--navy)}
+.st-view{padding:26px 28px 30px;min-height:340px;position:relative}
+.st-step{display:none}
+.st-step.active{display:grid;grid-template-columns:auto 1fr;gap:28px;animation:stIn .5s cubic-bezier(.2,.8,.2,1) both}
+.st-step.back.active{animation-name:stInBack}
+@keyframes stIn{from{opacity:0;transform:translateX(44px)}to{opacity:1;transform:none}}
+@keyframes stInBack{from{opacity:0;transform:translateX(-44px)}to{opacity:1;transform:none}}
+.st-ic{width:88px;height:88px;border-radius:22px;display:grid;place-items:center;font-size:40px;color:#fff;background:linear-gradient(135deg,var(--blue),var(--navy));box-shadow:0 14px 30px rgba(1,118,211,.35);animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{transform:scale(.6) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
+.st-ic.c2{background:linear-gradient(135deg,#5A1BA9,#0176D3)}
+.st-ic.c3{background:linear-gradient(135deg,#0E7490,#16A3B8)}
+.st-ic.c4{background:linear-gradient(135deg,#D97757,#B4492D)}
+.st-ic.c5{background:linear-gradient(135deg,#16A370,#0B6E4F)}
+.st-num{font-size:12.5px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.1em}
+.st-step h3{font-size:clamp(22px,2.6vw,28px);font-weight:800;color:var(--navy);letter-spacing:-.02em;margin:6px 0 10px;line-height:1.2}
+.st-step p{color:#3E4A59;font-size:15.5px;max-width:680px}
+.st-body{min-width:0}
+.st-body .btn{margin-top:20px}
+.st-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 28px;border-top:1px solid var(--line);background:#FAFBFC}
+.st-nav .btn{min-height:44px}
+.st-count{font-size:13.5px;font-weight:700;color:var(--muted)}
+.mini-list{list-style:none;display:grid;gap:8px;margin-top:16px}
+.mini-list li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:#3E4A59}
+.mini-list li .ck{background:var(--blue)}
+.src-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.src{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;display:flex;flex-direction:column;gap:6px}
+.src .s-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-50);color:var(--blue);font-size:18px}
+.src b{font-size:14.5px;color:var(--navy)}
+.src span{font-size:13px;color:var(--muted)}
+.src em{font-style:normal;font-weight:700;color:var(--blue)}
+.src .ok{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:800;color:var(--sales);background:var(--sales-bg);padding:3px 8px;border-radius:6px;align-self:flex-start}
+.chat{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--gray-2);display:grid;gap:10px;max-width:560px}
+.msg{padding:11px 14px;border-radius:14px;font-size:14.5px;max-width:88%}
+.msg.user{justify-self:end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.msg.bot{justify-self:start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;color:#3E4A59}
+.msg.bot .run{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:700;color:#B4492D}
+.typing{display:inline-flex;gap:4px;margin-top:8px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#B9C2CF;animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.approve{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:560px;background:#fff}
+.ap-head{display:flex;gap:8px;align-items:center;padding:12px 16px;background:var(--orange-bg);color:var(--orange);font-weight:700;font-size:13.5px}
+.ap-body{padding:14px 16px;font-size:14px;color:#3E4A59}
+.ap-body small{color:var(--muted);display:block;margin-bottom:6px}
+.ap-actions{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px}
+.ap-btn{font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+.ap-btn.ok{background:var(--sales-2);border-color:var(--sales-2);color:#fff}
+.final-cta{margin-top:24px;text-align:center;padding:30px;border-radius:20px;background:linear-gradient(135deg,var(--blue-50),#fff);border:1px dashed #9CCBF3}
+.final-cta p{margin-bottom:14px;color:var(--muted);font-weight:600}
+
+/* Quick start (5) */
+.qs-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+.qs-card{grid-column:span 2;position:relative;display:flex;flex-direction:column;gap:10px;padding:24px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#FBFDFF);overflow:hidden}
+.qs-card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--blue),#4BB4FF)}
+.qs-card:nth-child(4){grid-column:2/4}
+.qs-card:nth-child(5){grid-column:4/6}
+.qs-top{display:flex;justify-content:space-between;align-items:center}
+.badge-now{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;color:#7A4A00;background:linear-gradient(135deg,#FFE7A3,#FFD166);padding:5px 10px;border-radius:999px}
+.qs-n{font-size:30px;font-weight:800;color:#E3E8EF;letter-spacing:-.03em;line-height:1}
+.qs-ic{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;font-size:28px;color:#fff;background:linear-gradient(135deg,var(--blue),var(--navy));box-shadow:0 10px 22px rgba(1,118,211,.3);margin-top:4px}
+.qs-cat{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.qs-card h3{font-size:21px;font-weight:800;color:var(--navy);letter-spacing:-.01em;line-height:1.2}
+.qs-what{font-size:14.5px;color:#3E4A59}
+.qs-why{font-size:13.5px;color:var(--muted);background:var(--gray-2);border-left:3px solid var(--blue);padding:9px 11px;border-radius:0 8px 8px 0}
+.qs-why b{color:var(--navy)}
+.qs-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.prompt{display:flex;flex-direction:column;gap:8px;background:var(--navy);color:#fff;border-radius:12px;padding:12px}
+.prompt small{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9FC6EE}
+.prompt .cmd-row{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.prompt .cmd{font-size:15px}
+.prompt .alt{font-size:12.5px;color:#CFE6FF;opacity:.9;line-height:1.4}
+.cmd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:13px;font-weight:700;color:#7BF0C8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.cmd-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--navy);border-radius:10px;padding:7px 7px 7px 12px;min-width:0}
+.cmd-row .copy{flex-shrink:0;padding:6px 10px}
+.sk-num{margin-left:auto;font-size:12px;font-weight:800;color:#AAB4C3;flex-shrink:0}
+.sk-out{font-size:12.5px;color:#3E4A59;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+.sk-out b{color:var(--navy)}
+.sk-alt{font-size:12.5px;color:var(--muted);font-style:italic}
+.stg{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--muted);background:#fff;border:1px solid var(--line);padding:3px 8px;border-radius:999px;white-space:nowrap}
+.sk-badges{display:flex;gap:5px;flex-wrap:wrap}
+.oneshot{display:grid;grid-template-columns:1.1fr 1fr;gap:30px;align-items:center;padding:32px;border-radius:20px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.oneshot h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;color:var(--navy);letter-spacing:-.02em;margin:6px 0 10px;line-height:1.15}
+.oneshot p{color:#3E4A59}
+.os-compare{display:grid;gap:10px}
+.os-compare small{display:block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.os-before{background:#F4F5F7;border:1px dashed #C9D1DC;border-radius:12px;padding:14px 16px;font-size:14px}
+.os-before small{color:#B42318}
+.os-before p{color:#6B7280;text-decoration:line-through;text-decoration-color:rgba(180,35,24,.45)}
+.os-arrow{justify-self:center;width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;transform:rotate(90deg);font-size:18px}
+.os-after{background:linear-gradient(135deg,var(--navy-2),var(--navy));border-radius:12px;padding:16px 18px;color:#fff}
+.os-after small{color:#7BF0C8}
+.os-after .cmd{font-size:24px;display:block}
+.os-after span{display:block;font-size:13px;color:rgba(255,255,255,.75);margin-top:4px}
+.stage-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}
+.stage-lbl{font-size:13.5px;font-weight:700;color:var(--navy);margin-right:4px}
+.flt .c{font-size:11px;opacity:.65}
+.legend{font-size:12.5px;color:var(--muted);margin:8px 0 6px}
+.res-count{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:14px}
+@media (max-width:900px){.oneshot{grid-template-columns:1fr;padding:22px}}
+.copy{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--navy);background:#fff;border-radius:999px;padding:7px 12px;transition:all .2s}
+.copy:hover{background:#DDEFFF}
+.copy.copied{background:var(--sales-2);color:#fff}
+.swipe-hint{display:none;font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
+.after-qs{display:flex;justify-content:center;margin-top:28px}
+
+.srcs{display:flex;flex-wrap:wrap;gap:5px}
+.src-b{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 7px;border-radius:6px}
+.src-b svg{font-size:12px}
+.src-b.sf{background:#EAF5FE;color:#0B5CAB}
+.src-b.slack{background:#F2EEFB;color:#5B3FA8}
+.src-b.mail{background:#FFF1E8;color:#B5400B}
+.src-b.drive{background:#E6F6F9;color:#0E6577}
+.src-b.cal{background:#EEF0FD;color:#3C33B5}
+.type{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.type svg{font-size:13px}
+.type.ro{background:#EAF5FE;color:#0B5CAB;border:1px solid #B8DAF7}
+.type.dr{background:var(--orange-bg);color:var(--orange);border:1px solid #F7C98B}
+
+/* Skills catalog */
+.req{display:flex;gap:18px;align-items:center;padding:22px 24px;border-radius:16px;background:linear-gradient(135deg,var(--blue-50),#fff);border:1px solid #B8DAF7}
+.req .req-ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--blue);color:#fff;font-size:24px;flex-shrink:0}
+.req p{font-size:15.5px;color:var(--navy);font-weight:500}
+.req .req-srcs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 8px}
+.kpi{padding:18px;border-radius:14px;background:#fff;border:1px solid var(--line);text-align:center}
+.kpi strong{display:block;font-size:34px;font-weight:800;color:var(--navy);letter-spacing:-.03em;line-height:1.1}
+.kpi span{font-size:13px;font-weight:600;color:var(--muted)}
+.kpi.ro strong{color:var(--blue)} .kpi.dr strong{color:var(--orange)}
+.today{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.today-card{display:flex;flex-direction:column;gap:12px}
+.today-card .t-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--blue-50);color:var(--blue);font-size:21px}
+.today-card p{font-size:16px;font-weight:700;color:var(--navy);line-height:1.35}
+.today-card .t-sk{font-size:12.5px;color:var(--muted)}
+.today-card .copy{background:var(--navy);color:#fff;margin-top:auto}
+.today-card .copy:hover{background:var(--blue)}
+.today-card .copy.copied{background:var(--sales-2)}
+.cat-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0 16px}
+.filters{display:inline-flex;gap:6px;flex-wrap:wrap}
+.flt{font-size:13.5px;font-weight:700;padding:8px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:#fff;display:inline-flex;gap:6px;align-items:center;transition:all .2s}
+.flt:hover{border-color:var(--blue);color:var(--blue)}
+.flt.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.toggle-all{font-size:13.5px;font-weight:700;color:var(--blue);display:inline-flex;gap:6px;align-items:center;padding:8px 10px;border-radius:8px}
+.toggle-all:hover{background:var(--blue-50)}
+.acc{border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .25s}
+.acc.open{box-shadow:var(--shadow-lg)}
+.acc.cat-hidden{display:none}
+.acc-head{width:100%;display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:16px 20px;text-align:left}
+.acc-head:hover{background:#FAFBFC}
+.acc-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;font-size:21px}
+.acc-title b{display:block;font-size:17px;color:var(--navy);font-weight:800}
+.acc-title small{font-size:13px;color:var(--muted)}
+.acc-count{font-size:12.5px;font-weight:700;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.acc-count .n{background:var(--gray);color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:800}
+.acc-chev{font-size:20px;color:var(--muted);transition:transform .3s}
+.acc.open .acc-chev{transform:rotate(180deg);color:var(--blue)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.2,.8,.2,1)}
+.acc-inner{padding:4px 20px 20px}
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.skill{display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:12px;border:1px solid var(--line);background:var(--gray-2);transition:transform .2s,box-shadow .2s,background .2s}
+.skill:hover{transform:translateY(-3px);box-shadow:var(--shadow);background:#fff}
+.skill.hidden{display:none}
+.sk-top{display:flex;gap:10px;align-items:center}
+.sk-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:17px;flex-shrink:0}
+.skill h4{font-size:15px;font-weight:800;color:var(--navy);line-height:1.25}
+.skill p{font-size:13.5px;color:#3E4A59}
+.sk-prompt{font-size:12.5px;color:var(--blue-600);background:#fff;border:1px dashed #B8DAF7;border-radius:8px;padding:7px 9px;font-style:italic}
+.sk-meta{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-top:auto}
+
+/* =========================================================
+   CONTACT
+   ========================================================= */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}
+.contact-card{padding:0;overflow:hidden;text-align:center;border-radius:20px}
+.cc-banner{height:120px;background:radial-gradient(400px 160px at 80% 0,rgba(75,180,255,.6),transparent 60%),linear-gradient(135deg,var(--navy-2),var(--blue))}
+.avatar{width:128px;height:128px;border-radius:50%;margin:-64px auto 0;border:5px solid #fff;background:linear-gradient(135deg,#DDEFFF,#B8DAF7);display:grid;place-items:center;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.avatar svg{width:100%;height:100%}
+.avatar .ini{position:absolute;bottom:8px;right:8px;background:var(--blue);color:#fff;font-size:12px;font-weight:800;padding:3px 7px;border-radius:999px}
+.cc-body{padding:20px 28px 30px}
+.cc-body h2{font-size:28px;font-weight:800;color:var(--navy);letter-spacing:-.02em}
+.cc-body .role{color:var(--muted);font-weight:600;margin-top:2px}
+.cc-mail{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-weight:700;font-size:16px;padding:10px 16px;border-radius:999px;background:var(--blue-50)}
+.cc-mail:hover{background:#D6ECFD}
+.cc-actions{display:grid;gap:12px;margin-top:22px}
+.cc-actions .btn{width:100%}
+.side-card h3{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.side-card ol{list-style:none;display:grid;gap:14px;margin-top:18px;counter-reset:s}
+.side-card ol li{display:flex;gap:14px;align-items:flex-start;counter-increment:s}
+.side-card ol li::before{content:counter(s);width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px;flex-shrink:0}
+.side-card ol li b{display:block;color:var(--navy)}
+.side-card ol li span{font-size:14px;color:var(--muted)}
+.quick-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.quick-links button{font-size:13px;font-weight:700;color:var(--blue);background:var(--blue-50);padding:8px 12px;border-radius:999px;display:inline-flex;gap:6px;align-items:center}
+.quick-links button:hover{background:#D6ECFD}
+
+footer{background:var(--navy-2);color:rgba(255,255,255,.7);padding:30px 0;font-size:13px}
+footer .container{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:#A9D8FF}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+.modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;visibility:hidden;pointer-events:none}
+.modal.open{visibility:visible;pointer-events:auto}
+.modal-backdrop{position:absolute;inset:0;background:rgba(0,22,57,.6);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);opacity:0;transition:opacity .3s}
+.modal.open .modal-backdrop{opacity:1}
+.modal-dialog{position:relative;width:min(720px,100%);max-height:calc(100vh - 48px);background:#fff;border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(24px) scale(.97);transition:opacity .3s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.modal.open .modal-dialog{opacity:1;transform:none}
+.modal.accent-sales{--acc:var(--sales);--acc2:var(--sales-2);--acc-bg:var(--sales-bg)}
+.modal.accent-service{--acc:var(--svc);--acc2:var(--svc-2);--acc-bg:var(--svc-bg)}
+.modal-head{display:flex;gap:16px;align-items:center;padding:22px 64px 20px 24px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff}
+.modal-ic{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:26px;flex-shrink:0}
+.modal-head small{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.modal-head h3{font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+.modal-x{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;display:grid;place-items:center;font-size:20px;transition:background .2s,transform .2s;z-index:2}
+.modal-x:hover{background:rgba(255,255,255,.35);transform:rotate(90deg)}
+.modal-body{padding:22px 26px 28px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.det{font-size:15px;color:#3E4A59}
+.det h5{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin:20px 0 8px;display:flex;align-items:center;gap:8px}
+.det h5:first-child{margin-top:0}
+.det h5::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--acc)}
+.det p{margin-bottom:8px}
+.det ul{list-style:none;display:grid;gap:7px}
+.det ul li{position:relative;padding-left:22px}
+.det ul li::before{content:"";position:absolute;left:4px;top:.45em;width:8px;height:8px;border-radius:50%;background:var(--acc-bg);border:2px solid var(--acc)}
+.det ul.cols{grid-template-columns:repeat(2,1fr)}
+.det b{color:var(--navy)}
+.det .callout b{color:inherit}
+
+/* PDF loader */
+.pdf-loader{position:fixed;inset:0;z-index:400;background:rgba(0,22,57,.75);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:#fff;font-weight:700;text-align:center;padding:24px}
+.pdf-loader.show{display:flex}
+.spin{width:52px;height:52px;border-radius:50%;border:5px solid rgba(255,255,255,.25);border-top-color:#fff;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--navy);color:#fff;padding:12px 18px;border-radius:999px;font-weight:600;font-size:14px;opacity:0;transition:all .3s;z-index:500;pointer-events:none;box-shadow:var(--shadow-lg)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width:1080px){
+  .editions{grid-template-columns:1fr}
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+  .qs-grid{grid-template-columns:repeat(2,1fr)}
+  .qs-card,.qs-card:nth-child(4),.qs-card:nth-child(5){grid-column:auto}
+  .qs-card:nth-child(5){grid-column:1/-1}
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .src-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:900px){
+  .hero-grid,.pc-grid,.roi,.contact-wrap{grid-template-columns:1fr}
+  .brand-tag,.brand-sep{display:none}
+  .dual{grid-template-columns:1fr}
+  .upgrade{grid-template-columns:1fr;text-align:center}
+  .up-line{height:56px;width:6px;margin:0 auto;background:repeating-linear-gradient(180deg,var(--blue) 0 14px,transparent 14px 24px);background-size:6px 24px;animation:dashV 1s linear infinite}
+  @keyframes dashV{to{background-position:0 24px}}
+  .ba{grid-template-columns:1fr}
+  .ba-mid span{transform:rotate(90deg)}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:700px){
+  :root{--hdr-h:108px}
+  .container{padding:0 18px}
+  .grid3,.today{grid-template-columns:1fr}
+  .hdr-top{height:58px}
+  .brand img{height:28px}
+  .cb-mail span{display:none}
+  .cb-mail{width:38px;padding:0}
+  .t-long{display:none}.t-short{display:inline}
+  .tab{padding:12px 12px 14px;font-size:14px}
+  .section{padding:44px 0}
+  .hero{padding:48px 0 56px}
+  .hero .lead{font-size:16px}
+  .price-big strong{font-size:60px}
+  .edition{padding:20px;border-radius:16px}
+  .comp-grid{grid-template-columns:1fr}
+  .stack-grid,.stack-head{grid-template-columns:1fr}
+  .stack-head span:nth-child(2),.stack-head span:nth-child(3){display:none}
+  .stack-arrow{margin:0 auto;transform:rotate(90deg)}
+  .pv strong{font-size:21px}
+  .price-compare{padding:20px}
+  .pc-table{font-size:13px}
+  .pc-table th,.pc-table td{padding:10px}
+  .st-top{padding:20px 18px 4px}
+  .st-dot .lbl{display:none}
+  .st-dot .n{width:36px;height:36px;font-size:14px}
+  .st-view{padding:20px 18px 24px;min-height:0}
+  .st-step.active{grid-template-columns:1fr;gap:16px}
+  .st-ic{width:68px;height:68px;font-size:30px;border-radius:18px}
+  .st-nav{padding:14px 18px}
+  .st-nav .btn{padding:0 14px;font-size:14px}
+  .st-nav .btn .t-long{display:none}
+  .src-grid{grid-template-columns:1fr 1fr}
+  .qs-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:0 -18px;padding:4px 18px 14px;scrollbar-width:none}
+  .qs-grid::-webkit-scrollbar{display:none}
+  .qs-card{flex:0 0 86%;scroll-snap-align:center}
+  .swipe-hint{display:block}
+  .skills-grid{grid-template-columns:1fr}
+  .acc-head{grid-template-columns:auto 1fr auto;padding:14px 16px}
+  .acc-count{display:none}
+  .acc-inner{padding:4px 14px 16px}
+  .cta-band{padding:28px}
+  .det ul.cols{grid-template-columns:1fr}
+  .modal{padding:0}
+  .modal-dialog{width:100%;height:100%;max-height:none;border-radius:0}
+  .req{flex-direction:column;align-items:flex-start}
+  .ba-col{padding:20px}
+}
+@media (max-width:420px){
+  .cb-wa span{display:none}
+  .cb-wa{width:38px;padding:0}
+  .brand img{height:24px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .src-grid{grid-template-columns:1fr}
+  .calc-out{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .reveal{opacity:1;transform:none}
+}
+
+/* =========================================================
+   PDF MODE (applies to the off-screen clone used by html2pdf)
+   ========================================================= */
+.pdf-mode{background:#fff;width:100%;font-size:14px}
+.pdf-mode *{animation:none!important;transition:none!important}
+.pdf-mode .container{max-width:none;padding:0 4px}
+.pdf-mode .tab-panel,.pdf-mode .subpanel{display:block!important}
+.pdf-mode .reveal{opacity:1!important;transform:none!important}
+.pdf-mode .card{box-shadow:none!important;transform:none!important}
+.pdf-mode .pills-wrap,.pdf-mode .st-nav,.pdf-mode .st-top,.pdf-mode .no-pdf,.pdf-mode .link-more,.pdf-mode .copy,.pdf-mode .filters,.pdf-mode .toggle-all,.pdf-mode .swipe-hint,.pdf-mode .hero::before,.pdf-mode .acc-chev,.pdf-mode .hero-ctas{display:none!important}
+.pdf-mode .hero{padding:28px 22px;border-radius:14px;margin-bottom:8px}
+.pdf-mode .hero-grid{grid-template-columns:1.2fr 1fr;gap:20px}
+.pdf-mode .hero h1{font-size:34px}
+.pdf-mode .grad{background:none!important;color:#6CC4FF!important;-webkit-text-fill-color:#6CC4FF}
+.pdf-mode .glass{background:rgba(255,255,255,.1)}
+.pdf-mode .price-big strong{font-size:52px}
+.pdf-mode .section{padding:22px 0}
+.pdf-mode .h2{font-size:24px}
+.pdf-mode .editions{grid-template-columns:1fr!important}
+.pdf-mode .bar{height:var(--h)!important}
+.pdf-mode .st-view{padding:0;min-height:0}
+.pdf-mode .st-step{display:grid!important;grid-template-columns:auto 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--line)}
+.pdf-mode .st-ic{width:60px;height:60px;font-size:28px}
+.pdf-mode .stepper{border-radius:14px;padding:0 18px}
+.pdf-mode .qs-grid{display:grid!important;grid-template-columns:1fr 1fr!important;overflow:visible!important;margin:0!important;padding:0!important}
+.pdf-mode .qs-card,.pdf-mode .qs-card:nth-child(4),.pdf-mode .qs-card:nth-child(5){grid-column:auto!important}
+.pdf-mode .acc-body{max-height:none!important}
+.pdf-mode .acc.cat-hidden{display:block!important}
+.pdf-mode .skill.hidden{display:flex!important}
+.pdf-mode .skills-grid{grid-template-columns:1fr 1fr}
+.pdf-mode .acc-head{grid-template-columns:auto 1fr auto}
+.pdf-mode .today,.pdf-mode .grid3{grid-template-columns:repeat(3,1fr)}
+.pdf-mode .contact-wrap{grid-template-columns:1fr 1fr}
+.pdf-mode .roi{grid-template-columns:1fr 1fr}
+.pdf-mode .modal-body{overflow:visible}
+.pdf-h{display:flex;align-items:center;justify-content:space-between;background:var(--navy);color:#fff;padding:14px 18px;border-radius:10px;font-weight:800;font-size:17px;margin:0 0 16px}
+.pdf-h small{font-weight:600;font-size:12px;opacity:.75}
+.pdf-cover{padding:40px 30px;border-radius:16px;color:#fff;background:linear-gradient(135deg,var(--navy-2),var(--navy) 55%,#0A3F86);margin-bottom:18px}
+.pdf-cover .logo-row{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.pdf-cover .logo-row img{height:40px;background:#fff;border-radius:8px;padding:6px}
+.pdf-cover h1{font-size:36px;line-height:1.1;font-weight:800;margin-bottom:10px}
+.pdf-cover p{color:rgba(255,255,255,.8);font-size:15px}
+.pdf-cover .who{margin-top:26px;padding-top:18px;border-top:1px solid rgba(255,255,255,.2);font-size:14px}
+.detail-block{--acc:var(--blue);--acc2:#4BB4FF;--acc-bg:var(--blue-50);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px;background:#fff}
+.detail-block .modal-head{padding:16px 20px}
+.detail-block .modal-body{padding:18px 20px}
+</style>
+</head>
+<body>
+
+<!-- =====================================================
+     HEADER (sticky) + CONTACT BANNER
+     ===================================================== -->
+<header class="site-header" id="siteHeader">
+  <div class="container hdr-top">
+    <a class="brand" href="#core" data-goto="core" aria-label="Salesforce — inicio">
+      <img src="https://a.sfdcstatic.com/shared/images/c360-nav/salesforce-with-type-logo.svg" alt="Salesforce" width="140" height="34" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+      <span class="brand-fallback">salesforce</span>
+      <span class="brand-sep"></span>
+      <span class="brand-tag">Core Edition · Claude Beta</span>
+    </a>
+    <div class="contact-bar" role="group" aria-label="Contacto directo">
+      <a class="cb-mail" href="mailto:arozo@salesforce.com" title="arozo@salesforce.com"><i data-ic="mail"></i><span>arozo@salesforce.com</span></a>
+      <a class="cb-wa" href="https://wa.me/573103120328?text=Hola%20estoy%20revisando%20el%20documento%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n" target="_blank" rel="noopener" title="Escríbeme por WhatsApp"><i data-ic="chat"></i><span>Contáctame</span></a>
+    </div>
+  </div>
+  <nav class="container tabs" role="tablist" aria-label="Secciones">
+    <button class="tab active" role="tab" aria-selected="true" data-tab="core"><i data-ic="layers"></i><span class="t-long">Nueva Edición Core</span><span class="t-short">Core</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="claude"><i data-ic="sparkle"></i><span class="t-long">Claude en Salesforce</span><span class="t-short">Claude</span><span class="mini b">BETA</span><span class="mini g">GRATIS</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="contact"><i data-ic="user"></i><span>Contacto</span></button>
+  </nav>
+</header>
+
+<main>
+<!-- =====================================================
+     TAB 1 — NUEVA EDICIÓN CORE
+     ===================================================== -->
+<section class="tab-panel active" id="tab-core" role="tabpanel" data-title="Nueva Edición Core">
+  <div class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow"><i data-ic="zap"></i> Nueva edición · Sales &amp; Service Cloud</span>
+        <h1>Una sola edición superior.<br><span class="grad">Core Edition.</span></h1>
+        <p class="lead">Salesforce consolida su portafolio en una sola edición superior llamada <b>Core Edition</b>, que reemplaza y mejora la Enterprise Edition (EE) tanto en <b>Sales Cloud</b> como en <b>Service Cloud</b>.</p>
+        <div class="hero-ctas">
+          <button class="btn btn-light" data-goto="core" data-sub="core-why">Por qué migrar ahora <i data-ic="arrow"></i></button>
+          <button class="btn btn-ghost" data-goto="contact">Hablar con mi AE</button>
+        </div>
+        <div class="hero-stats">
+          <div><strong>1</strong><span>edición consolidada</span></div>
+          <div><strong>$300+</strong><span>valor standalone</span></div>
+          <div><strong>1.5x</strong><span>relación valor / precio</span></div>
+        </div>
+      </div>
+      <div class="glass price-card">
+        <div class="price-note">
+          <span class="pn-ic"><i data-ic="award"></i></span>
+          <div><b>Precio preferencial para clientes actuales</b><span>Evaluamos cada caso de forma personalizada para ofrecerte el mejor precio y mantener un nivel de descuento significativo por ser cliente.</span></div>
+        </div>
+        <small>Core Edition · precio de lista</small>
+        <div class="price-big"><strong>$195</strong><span>/usuario/mes</span></div>
+        <ul class="price-list">
+          <li><span class="dot"><i data-ic="check"></i></span>Todo lo que ya tienes en Enterprise Edition</li>
+          <li><span class="dot"><i data-ic="check"></i></span>Slack Business+ con Slackbot</li>
+          <li><span class="dot"><i data-ic="check"></i></span>Tableau Next con Tableau Agent</li>
+          <li><span class="dot"><i data-ic="check"></i></span>Premier Success Plan</li>
+          <li><span class="dot"><i data-ic="check"></i></span>500K Flex Credits/org · 20 MB/usuario</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="pills-wrap">
+    <div class="container">
+      <div class="pills" role="tablist" aria-label="Sub-secciones Core">
+        <button class="pill active" data-group="core" data-sub="core-what"><i data-ic="info"></i>Qué es Core</button>
+        <button class="pill" data-group="core" data-sub="core-why"><i data-ic="trend"></i>Por qué migrar a Core ahora</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- SUB-TAB 1.A ---------- -->
+  <div class="subpanel active" data-group="core" data-sub="core-what" data-title="Qué es Core">
+    <div class="section">
+      <div class="container">
+        <div class="sec-head">
+          <span class="kicker">Qué es Core</span>
+          <h2 class="h2">Todo lo de Enterprise Edition, más colaboración, analítica e IA en un solo paquete</h2>
+          <p class="lead">La misma base que ya conoces, ahora con las capacidades que hoy compras por separado. Elige tu nube y explora qué cambia.</p>
+        </div>
+
+        <div class="editions">
+          <!-- ===== SALES (VERDE) ===== -->
+          <article class="edition sales">
+            <header class="ed-head">
+              <span class="ed-badge"><i data-ic="trend"></i>Sales Cloud</span>
+              <h3>De Sales Cloud Enterprise a <b>Sales Core Edition</b></h3>
+              <p>Sales Cloud Enterprise evoluciona a Sales Core Edition: todo lo que ya tenías en EE, más colaboración (Slack Business+), analítica conversacional (Tableau Next), inteligencia de llamadas y correos de ventas, y un plan de éxito premium — todo por <b>$195/usuario/mes</b>, cuando el valor de estos componentes por separado superaría los <b>$300/usuario/mes</b>.</p>
+              <div class="ed-path"><span>Sales Cloud EE</span><i data-ic="arrow"></i><span class="to">Sales Core Edition</span></div>
+            </header>
+
+            <div class="card static reveal">
+              <div class="price-row"><div><small>Sales</small><b>Core Edition</b></div><div class="pr"><strong>$195</strong><span>/user/mo</span></div></div>
+              <div class="sub-h">Todo lo de EE</div>
+              <ul class="chips"><li><i data-ic="building"></i>Account Management</li><li><i data-ic="target"></i>Opportunity Management</li><li><i data-ic="search"></i>Lead Management</li></ul>
+              <div class="sub-h">Más</div>
+              <ul class="checks">
+                <li><span class="ck"><i data-ic="check"></i></span>Slack Business+ con Slackbot</li>
+                <li><span class="ck"><i data-ic="check"></i></span>Call Intelligence &amp; Sales Emails</li>
+                <li><span class="ck"><i data-ic="check"></i></span>Premier Success Plan</li>
+                <li><span class="ck"><i data-ic="check"></i></span>Tableau Next con Tableau Agent</li>
+                <li><span class="ck"><i data-ic="check"></i></span><span>Basic Momentum <em>(post GA)</em></span></li>
+              </ul>
+              <div class="dataai"><div class="lbl">Data &amp; AI — ahora incluye</div><div><strong>500K</strong><span>Flex Credits / org</span></div><div><strong>20 MB</strong><span>almacenamiento / usuario</span></div></div>
+            </div>
+
+            <div>
+              <div class="sub-h">Componentes adicionales sobre EE</div>
+              <div class="comp-grid">
+                <div class="card comp reveal"><div class="comp-ic"><i data-ic="hash"></i></div><b>Slack Business+ with Slackbot</b><p>Colaboración con el asistente de IA nativo de Slack.</p><button class="link-more" data-detail="slack" data-accent="sales">Ver más detalles <i data-ic="arrow"></i></button></div>
+                <div class="card comp reveal"><div class="comp-ic"><i data-ic="life"></i></div><b>Premier Success Plan</b><p>Soporte 24/7 y guía experta para adoptar más rápido.</p><button class="link-more" data-detail="premier" data-accent="sales">Ver más detalles <i data-ic="arrow"></i></button></div>
+                <div class="card comp reveal"><div class="comp-ic"><i data-ic="chart"></i></div><b>Tableau Next with Tableau Agent</b><p>Analítica conversacional sin construir dashboards.</p><button class="link-more" data-detail="tableau" data-accent="sales">Ver más detalles <i data-ic="arrow"></i></button></div>
+                <div class="card comp reveal"><div class="comp-ic"><i data-ic="phone"></i></div><b>Call Intelligence &amp; Sales Emails</b><p>Llamadas analizadas y correos redactados con IA.</p><button class="link-more" data-detail="callintel" data-accent="sales">Ver más detalles <i data-ic="arrow"></i></button></div>
+              </div>
+            </div>
+
+            <div class="card static reveal">
+              <div class="sub-h">Consolida tu stack</div>
+              <div class="stack-head"><span>Lo que reemplaza</span><span></span><span>Consolidado en Core</span></div>
+              <div class="stack-grid">
+                <ul class="stack-from">
+                  <li><span>Sales Programs</span><b>Mindtickle</b></li>
+                  <li><span>GenAI &amp; Data Platform</span><b>Tealium</b></li>
+                  <li><span>Collaboration</span><b>Microsoft Teams</b></li>
+                  <li><span>CRM</span><b>Microsoft Dynamics 365 / HubSpot</b></li>
+                </ul>
+                <div class="stack-arrow"><i data-ic="arrow"></i></div>
+                <ul class="stack-to">
+                  <li class="core-lbl">Sales Core Edition</li>
+                  <li><i data-ic="chart"></i>Tableau Next</li>
+                  <li><i data-ic="sparkle"></i>Agentforce &amp; Data Cloud</li>
+                  <li><i data-ic="hash"></i>Slack Business+</li>
+                  <li><i data-ic="cloud"></i>Sales Cloud + Premier Success Plan</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card static reveal">
+              <div class="sub-h">El valor para tu equipo</div>
+              <div class="value-item"><div class="value-ic"><i data-ic="msg"></i></div><div><h5>Collaboration &amp; Analytics</h5><div class="tags"><span>Slack con Slackbot</span><span>Tableau Next</span></div><p>Da a los reps una interfaz de colaboración perfecta con analítica conversacional e insights.</p></div></div>
+              <div class="value-item"><div class="value-ic"><i data-ic="life"></i></div><div><h5>Personalized Guidance</h5><div class="tags"><span>Premier Success Plan</span></div><p>Mantiene a los equipos de ventas cerrando con soporte más rápido, guía experta y menos interrupciones.</p></div></div>
+            </div>
+
+            <div class="card static reveal">
+              <div class="sub-h">Precio vs. valor</div>
+              <div class="pv"><div class="hl"><strong>$195</strong><span>Core PUPM</span></div><div><strong>$300+</strong><span>Valor standalone</span></div><div><strong>1.5x</strong><span>Valor / precio</span></div></div>
+              <div class="pv-foot">+$100 de valor adicional vs. Enterprise Edition</div>
+            </div>
+          </article>
+
+          <!-- ===== SERVICE (ROJO/MAGENTA) ===== -->
+          <article class="edition service">
+            <header class="ed-head">
+              <span class="ed-badge"><i data-ic="headset"></i>Service Cloud</span>
+              <h3>De Service Cloud Enterprise a <b>Service Core Edition</b></h3>
+              <p>Service Cloud Enterprise evoluciona a Service Core Edition: todo lo que ya tenías en EE (Case Management, Service Console, Incident Management), más Slack Business+, Data 360, Tableau Next y Premier Success Plan — por <b>$195/usuario/mes</b> frente a un valor independiente de <b>$300+</b>.</p>
+              <div class="ed-path"><span>Service Cloud EE</span><i data-ic="arrow"></i><span class="to">Service Core Edition</span></div>
+            </header>
+
+            <div class="card static reveal">
+              <div class="price-row"><div><small>Service</small><b>Core Edition</b></div><div class="pr"><strong>$195</strong><span>/user/mo</span></div></div>
+              <div class="sub-h">Todo lo de EE</div>
+              <ul class="chips"><li><i data-ic="folder"></i>Case Management</li><li><i data-ic="grid"></i>Service Console</li><li><i data-ic="alert"></i>Incident Management</li></ul>
+              <div class="sub-h">Más</div>
+              <ul class="checks">
+                <li><span class="ck"><i data-ic="check"></i></span>Slack Business+ con Slackbot</li>
+                <li><span class="ck"><i data-ic="check"></i></span>Premier Success Plan</li>
+                <li><span class="ck"><i data-ic="check"></i></span>Tableau Next con Tableau Agent</li>
+              </ul>
+              <div class="dataai"><div class="lbl">Data &amp; AI — ahora incluye</div><div><strong>500K</strong><span>Flex Credits / org</span></div><div><strong>20 MB</strong><span>almacenamiento / usuario</span></div></div>
+            </div>
+
+            <div>
+              <div class="sub-h">Componentes adicionales sobre EE</div>
+              <div class="comp-grid">
+                <div class="card comp reveal"><div class="comp-ic"><i data-ic="hash"></i></div><b>Slack Business+ with Slackbot</b><p>Colaboración con el asistente de IA nativo de Slack.</p><button class="link-more" data-detail="slack" data-accent="service">Ver más detalles <i data-ic="arrow"></i></button></div>
+                <div class="card comp reveal"><div class="comp-ic"><i data-ic="life"></i></div><b>Premier Success Plan</b><p>Soporte 24/7 y guía experta para adoptar más rápido.</p><button class="link-more" data-detail="premier" data-accent="service">Ver más detalles <i data-ic="arrow"></i></button></div>
+                <div class="card comp reveal"><div class="comp-ic"><i data-ic="chart"></i></div><b>Tableau Next with Tableau Agent</b><p>Analítica conversacional sin construir dashboards.</p><button class="link-more" data-detail="tableau" data-accent="service">Ver más detalles <i data-ic="arrow"></i></button></div>
+              </div>
+            </div>
+
+            <div class="card static reveal">
+              <div class="sub-h">Consolida tu stack</div>
+              <div class="stack-head"><span>Lo que reemplaza</span><span></span><span>Consolidado en Core</span></div>
+              <div class="stack-grid">
+                <ul class="stack-from">
+                  <li><span>Collaboration</span><b>Microsoft Teams</b></li>
+                  <li><span>Analytics</span><b>Power BI</b></li>
+                  <li><span>Data Platform</span><b>Databricks</b></li>
+                  <li><span>CRM</span><b>Microsoft Dynamics 365 / HubSpot</b></li>
+                </ul>
+                <div class="stack-arrow"><i data-ic="arrow"></i></div>
+                <ul class="stack-to">
+                  <li class="core-lbl">Service Core Edition</li>
+                  <li><i data-ic="hash"></i>Slack &amp; Slackbot</li>
+                  <li><i data-ic="chart"></i>Tableau Next</li>
+                  <li><i data-ic="db"></i>Data 360</li>
+                  <li><i data-ic="cloud"></i>Service Cloud + Premier Success Plan</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card static reveal">
+              <div class="sub-h">El valor para tu equipo</div>
+              <div class="value-item"><div class="value-ic"><i data-ic="chart"></i></div><div><h5>Conversational Analytics</h5><div class="tags"><span>Momentum</span><span>Tableau Next</span><span>Slack Business+</span><span>Slackbot</span></div><p>Da a tus agentes y equipos de servicio analítica avanzada e insights basados en conocimiento confiable.</p></div></div>
+              <div class="value-item"><div class="value-ic"><i data-ic="life"></i></div><div><h5>Personalized Guidance</h5><div class="tags"><span>Premier Success Plan</span></div><p>Mantiene los casos resolviéndose con soporte más rápido, guía experta y menos interrupciones.</p></div></div>
+            </div>
+
+            <div class="card static reveal">
+              <div class="sub-h">Precio vs. valor</div>
+              <div class="pv"><div class="hl"><strong>$195</strong><span>Core PUPM</span></div><div><strong>$300+</strong><span>Valor standalone</span></div><div><strong>1.5x</strong><span>Valor / precio</span></div></div>
+              <div class="pv-foot">+$100 de valor adicional vs. Enterprise Edition</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suma de precios vs consolidado -->
+    <div class="section alt">
+      <div class="container">
+        <div class="card static price-compare reveal">
+          <div class="sec-head">
+            <span class="kicker">Business case</span>
+            <h2 class="h2">Suma de precios públicos vs. precio consolidado</h2>
+            <p class="lead">Lo que costaría armar el mismo stack comprando cada componente por separado, frente a una sola edición.</p>
+          </div>
+          <div class="pc-grid">
+            <table class="pc-table">
+              <thead><tr><th>Componente</th><th>Por separado</th><th>En Core Edition</th></tr></thead>
+              <tbody>
+                <tr><td>Enterprise Edition (base)</td><td>Licencia base</td><td>✓ Incluido</td></tr>
+                <tr><td>Slack Business+ con Slackbot</td><td>Licencia adicional</td><td>✓ Incluido</td></tr>
+                <tr><td>Tableau Next con Tableau Agent</td><td>Licencia adicional</td><td>✓ Incluido</td></tr>
+                <tr><td>Data 360 / Agentforce (500K Flex Credits)</td><td>Consumo adicional</td><td>✓ Incluido</td></tr>
+                <tr><td>Premier Success Plan</td><td>Plan adicional</td><td>✓ Incluido</td></tr>
+              </tbody>
+              <tfoot><tr><td>Total por usuario/mes</td><td>$300+</td><td>$195</td></tr></tfoot>
+            </table>
+            <div class="savings">
+              <div class="ring" id="ring">
+                <svg viewBox="0 0 180 180" aria-hidden="true">
+                  <circle cx="90" cy="90" r="76" fill="none" stroke="#E3E8EF" stroke-width="16"/>
+                  <circle class="prog" cx="90" cy="90" r="76" fill="none" stroke="#0176D3" stroke-width="16" stroke-linecap="round" stroke-dasharray="477.5" stroke-dashoffset="477.5" data-target="310.4"/>
+                </svg>
+                <div class="ring-txt"><strong>35%+</strong><span>de ahorro</span></div>
+              </div>
+              <p>Ahorra 35%+ consolidando en una sola edición, en vez de comprar cada producto por separado.</p>
+            </div>
+          </div>
+
+          <div class="dual">
+            <div class="card static bars-card reveal">
+              <h4><i data-ic="trend"></i>Sales Core Edition</h4>
+              <div class="barchart">
+                <div class="bar-col"><div class="bar-track"><div class="bar core" style="--h:65%"><span>$195</span></div></div><label>Core PUPM</label></div>
+                <div class="bar-col"><div class="bar-track"><div class="bar alone" style="--h:100%"><span>$300+</span></div></div><label>Valor standalone</label></div>
+              </div>
+              <div class="bar-meta"><div><strong>+$100</strong><span>valor adicional vs. EE</span></div><div><strong>1.5x</strong><span>valor / precio</span></div></div>
+            </div>
+            <div class="card static bars-card service reveal">
+              <h4><i data-ic="headset"></i>Service Core Edition</h4>
+              <div class="barchart">
+                <div class="bar-col"><div class="bar-track"><div class="bar core" style="--h:65%"><span>$195</span></div></div><label>Core PUPM</label></div>
+                <div class="bar-col"><div class="bar-track"><div class="bar alone" style="--h:100%"><span>$300+</span></div></div><label>Valor standalone</label></div>
+              </div>
+              <div class="bar-meta"><div><strong>+$100</strong><span>valor adicional vs. EE</span></div><div><strong>1.5x</strong><span>valor / precio</span></div></div>
+            </div>
+          </div>
+          <p class="note">Valor standalone de referencia según material de Salesforce para Core Edition. Precios en USD por usuario/mes; confirma precios de lista y condiciones con tu Account Executive.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- SUB-TAB 1.B ---------- -->
+  <div class="subpanel" data-group="core" data-sub="core-why" data-title="Por qué migrar a Core ahora">
+    <div class="section">
+      <div class="container">
+        <div class="sec-head">
+          <span class="kicker">Upgrade path</span>
+          <h2 class="h2">De Enterprise a Core en un solo movimiento</h2>
+          <p class="lead">Core Edition es la evolución natural de tu Enterprise Edition: un upgrade directo, sin saltos intermedios de edición ni re-plataformas complejas.</p>
+        </div>
+        <div class="card static upgrade reveal">
+          <div class="up-node"><span class="up-lbl">Hoy</span><b>Enterprise Edition</b><small>Sales Cloud · Service Cloud</small></div>
+          <div class="up-line"><span>Upgrade directo</span></div>
+          <div class="up-node core"><span class="up-lbl">Siguiente paso</span><b>Core Edition</b><small>$195/usuario/mes</small></div>
+        </div>
+        <div class="grid3" style="margin-top:20px">
+          <div class="card feat reveal"><div class="feat-ic"><i data-ic="arrow"></i></div><div><h4>Sin saltos complejos</h4><p>Pasas de EE a Core directamente; tu base de Sales o Service Cloud es la misma que ya conoces.</p></div></div>
+          <div class="card feat reveal"><div class="feat-ic"><i data-ic="layers"></i></div><div><h4>Activa por fases</h4><p>Habilita Slack Business+, Tableau Next y Data 360 al ritmo de tus equipos.</p></div></div>
+          <div class="card feat reveal"><div class="feat-ic"><i data-ic="life"></i></div><div><h4>Acompañamiento incluido</h4><p>Premier Success Plan guía la adopción desde el primer día.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section alt">
+      <div class="container">
+        <div class="sec-head">
+          <span class="kicker">Insights de implementación</span>
+          <h2 class="h2">Una transición rápida y con respaldo</h2>
+        </div>
+        <div class="grid4">
+          <div class="card stat reveal"><div class="stat-ic"><i data-ic="clock"></i></div><strong><span data-count="51">51</span> <small>días</small></strong><h4>Tiempo promedio de implementación</h4><p>De la firma a usuarios productivos.</p></div>
+          <div class="card stat reveal"><div class="stat-ic"><i data-ic="layers"></i></div><strong><span data-count="14">14</span><small>+</small></strong><h4>Blueprints por industria</h4><p>Puntos de partida probados para tu sector.</p></div>
+          <div class="card stat reveal"><div class="stat-ic"><i data-ic="award"></i></div><strong><small>Partners</small></strong><h4>Partners certificados</h4><p>Ecosistema de implementadores con experiencia en Core.</p></div>
+          <div class="card stat reveal"><div class="stat-ic"><i data-ic="briefcase"></i></div><strong><small>Pro Services</small></strong><h4>Professional Services</h4><p>Expertos de Salesforce disponibles para tu proyecto.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="container">
+        <div class="sec-head">
+          <span class="kicker">Antes / después</span>
+          <h2 class="h2">Así cambia el día a día de un cliente Enterprise</h2>
+        </div>
+        <span class="client-tag"><i data-ic="building"></i>Cliente ilustrativo: empresa B2B con equipos de ventas y servicio en Enterprise Edition</span>
+        <div class="ba reveal">
+          <div class="ba-col before">
+            <h4><i data-ic="x"></i>Antes</h4>
+            <p class="ba-sub">Stack fragmentado, múltiples proveedores</p>
+            <ul>
+              <li><span class="mk"><i data-ic="x"></i></span>Swivel-chair entre Slack o Teams y el CRM para coordinar cada deal o caso</li>
+              <li><span class="mk"><i data-ic="x"></i></span>BI aparte: los reportes viven fuera del flujo de trabajo y llegan tarde</li>
+              <li><span class="mk"><i data-ic="x"></i></span>CRM aislado de la colaboración y de los datos</li>
+              <li><span class="mk"><i data-ic="x"></i></span>Soporte estándar: tiempos de respuesta más largos y poca guía proactiva</li>
+            </ul>
+          </div>
+          <div class="ba-mid"><span><i data-ic="arrow"></i></span></div>
+          <div class="ba-col after">
+            <h4><i data-ic="check"></i>Después, con Core</h4>
+            <p class="ba-sub">Una edición, un contrato, una experiencia</p>
+            <ul>
+              <li><span class="mk"><i data-ic="check"></i></span>Todo consolidado: CRM, Slack Business+, Tableau Next y Data 360 juntos</li>
+              <li><span class="mk"><i data-ic="check"></i></span>Insights conversacionales: preguntas en lenguaje natural con Slackbot y Tableau Agent</li>
+              <li><span class="mk"><i data-ic="check"></i></span>Datos y CRM conectados, con 500K Flex Credits incluidos</li>
+              <li><span class="mk"><i data-ic="check"></i></span>Soporte premium incluido: Premier Success Plan 24/7</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section alt">
+      <div class="container">
+        <div class="sec-head">
+          <span class="kicker">ROI / Business case</span>
+          <h2 class="h2">Stack fragmentado vs. Core Edition consolidado</h2>
+          <p class="lead">Cada herramienta de terceros trae su propia licencia, contrato, renovación e integración. Core las reúne en una sola.</p>
+        </div>
+        <div class="roi">
+          <div class="card static reveal">
+            <h3 style="font-size:18px;font-weight:800;color:var(--navy)">Hoy: varias licencias de terceros</h3>
+            <ul class="frag-list">
+              <li><span class="fi"><i data-ic="cloud"></i></span><div>CRM<small>Dynamics 365 / HubSpot</small></div><span class="chip">Contrato 1</span></li>
+              <li><span class="fi"><i data-ic="msg"></i></span><div>Colaboración<small>Microsoft Teams</small></div><span class="chip">Contrato 2</span></li>
+              <li><span class="fi"><i data-ic="chart"></i></span><div>Analítica / BI<small>Power BI</small></div><span class="chip">Contrato 3</span></li>
+              <li><span class="fi"><i data-ic="db"></i></span><div>Plataforma de datos e IA<small>Databricks / Tealium</small></div><span class="chip">Contrato 4</span></li>
+              <li><span class="fi"><i data-ic="award"></i></span><div>Programas de ventas<small>Mindtickle</small></div><span class="chip">Contrato 5</span></li>
+              <li><span class="fi"><i data-ic="life"></i></span><div>Soporte premium<small>Plan adicional</small></div><span class="chip">Contrato 6</span></li>
+            </ul>
+            <div class="frag-total"><span>6 proveedores · 6 renovaciones · 6 integraciones</span></div>
+            <div class="frag-total ok"><span><b>Core Edition:</b> 1 edición · 1 contrato · $195/usuario/mes</span></div>
+          </div>
+          <div class="card static calc reveal">
+            <h3>Estima tu ahorro</h3>
+            <p class="note">Ajusta los valores a tu caso. Estimación ilustrativa, no constituye una cotización.</p>
+            <div class="field"><label for="rUsers">Usuarios <output id="oUsers">100</output></label><input type="range" id="rUsers" min="10" max="2000" step="10" value="100"></div>
+            <div class="field"><label for="rCost">Costo actual del stack por usuario/mes <output id="oCost">$300</output></label><input type="range" id="rCost" min="195" max="500" step="5" value="300"></div>
+            <div class="calc-out">
+              <div><span>Stack fragmentado / año</span><strong id="cCur">$360,000</strong></div>
+              <div><span>Core Edition / año</span><strong id="cCore">$234,000</strong></div>
+              <div class="big"><span>Ahorro anual estimado</span><strong id="cSave">$126,000</strong> <span id="cPct">35% menos</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="container">
+        <div class="cta-band reveal">
+          <div><h3>Agenda una sesión con tu AE para evaluar tu transición a Core Edition</h3><p>Revisamos tu stack actual, el business case y el plan de implementación.</p></div>
+          <button class="btn btn-light btn-lg" data-goto="contact"><i data-ic="calendar"></i>Agendar sesión</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     TAB 2 — CLAUDE EN SALESFORCE
+     ===================================================== -->
+<section class="tab-panel" id="tab-claude" role="tabpanel" data-title="Claude en Salesforce (Beta y Gratis)">
+  <div class="hero claude">
+    <div class="container hero-grid">
+      <div>
+        <div class="claude-id">
+          <div class="claude-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Claude_AI_symbol.svg/1280px-Claude_AI_symbol.svg.png" alt="Claude" crossorigin="anonymous" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Claude_AI_symbol.svg/1280px-Claude_AI_symbol.svg.png'}else{this.style.display='none';this.nextElementSibling.style.display='block'}"><span class="fb">C</span></div>
+          <div class="badges"><span class="badge beta">BETA</span><span class="badge free">GRATIS</span></div>
+        </div>
+        <h1>Claude en Salesforce: <span class="grad">tu copiloto de ventas</span></h1>
+        <p class="lead"><b>Claudeforce</b> integra Claude (Anthropic) como copiloto dentro del ecosistema de ventas de Salesforce. Hoy está disponible en <b>Beta gratuita</b> (early access) para tu organización: ejecutas un skill con un solo comando y Claude trabaja con tus datos de Salesforce, correo, calendario, documentos y Slack o Teams — sin importar si tu stack es Google Workspace o Microsoft 365.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-light btn-lg" href="https://agentexchange.salesforce.com/sales-cloud-in-claude-beta-access" target="_blank" rel="noopener"><i data-ic="key"></i>Solicita acceso Beta gratuito</a>
+          <button class="btn btn-ghost" data-goto="claude" data-sub="claude-skills">Ver los 37 skills</button>
+        </div>
+      </div>
+      <div class="hero-feats">
+        <div class="hero-feat"><span class="hf-ic"><i data-ic="msg"></i></span><div><b>Lenguaje natural</b><span>Pide lo que necesitas como se lo pedirías a un colega.</span></div></div>
+        <div class="hero-feat"><span class="hf-ic"><i data-ic="sparkle"></i></span><div><b>37 skills pre-diseñados</b><span>8 categorías listas para usar desde el primer día.</span></div></div>
+        <div class="hero-feat"><span class="hf-ic"><i data-ic="shield"></i></span><div><b>Aprobación humana</b><span>Todo borrador o escritura pasa por tu revisión.</span></div></div>
+        <div class="hero-feat"><span class="hf-ic"><i data-ic="link"></i></span><div><b>Google o Microsoft</b><span>Funciona con Google Workspace o Microsoft 365.</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pills-wrap">
+    <div class="container">
+      <div class="pills" role="tablist" aria-label="Sub-secciones Claude">
+        <button class="pill active" data-group="claude" data-sub="claude-start"><i data-ic="zap"></i>Cómo empezar</button>
+        <button class="pill" data-group="claude" data-sub="claude-skills"><i data-ic="grid"></i>Skills pre-diseñados y casos de uso <span class="cnt">37</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- SUB-TAB 2.A: Cómo empezar ---------- -->
+  <div class="subpanel active" data-group="claude" data-sub="claude-start" data-title="Cómo empezar con Claude">
+    <div class="section">
+      <div class="container">
+        <div class="sec-head">
+          <span class="kicker">Paso a paso</span>
+          <h2 class="h2">De la solicitud a tu primer skill en 5 pasos</h2>
+        </div>
+
+        <div class="card static stepper reveal" id="stepper">
+          <div class="st-top">
+            <div class="st-progress" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1"><div class="st-bar" id="stBar"></div></div>
+            <ol class="st-dots">
+              <li><button class="st-dot active" data-go="0"><span class="n">1</span><span class="lbl">Solicita acceso</span></button></li>
+              <li><button class="st-dot" data-go="1"><span class="n">2</span><span class="lbl">Activa el plugin</span></button></li>
+              <li><button class="st-dot" data-go="2"><span class="n">3</span><span class="lbl">Conecta tus datos</span></button></li>
+              <li><button class="st-dot" data-go="3"><span class="n">4</span><span class="lbl">Usa los skills</span></button></li>
+              <li><button class="st-dot" data-go="4"><span class="n">5</span><span class="lbl">Revisa y aprueba</span></button></li>
+            </ol>
+          </div>
+          <div class="st-view" aria-live="polite">
+            <div class="st-step active">
+              <div class="st-ic"><i data-ic="key"></i></div>
+              <div class="st-body">
+                <span class="st-num">Paso 1 de 5</span>
+                <h3>Solicita tu acceso Beta gratuito</h3>
+                <p>Registra tu organización en el programa Beta de Claude en Salesforce. No tiene costo durante la Beta.</p>
+                <a class="btn btn-primary btn-lg" href="https://agentexchange.salesforce.com/sales-cloud-in-claude-beta-access" target="_blank" rel="noopener"><i data-ic="key"></i>Solicitar acceso Beta gratuito</a>
+              </div>
+            </div>
+            <div class="st-step">
+              <div class="st-ic c2"><i data-ic="power"></i></div>
+              <div class="st-body">
+                <span class="st-num">Paso 2 de 5</span>
+                <h3>Activa el plugin Claude Cowork en tu organización</h3>
+                <p>Una vez aprobado tu acceso, el plugin se habilita en tu organización/instancia de Salesforce (early access).</p>
+                <ul class="mini-list">
+                  <li><span class="ck"><i data-ic="check"></i></span>Recibes la confirmación de acceso aprobado</li>
+                  <li><span class="ck"><i data-ic="check"></i></span>Se habilita el plugin Claude Cowork para tu organización</li>
+                  <li><span class="ck"><i data-ic="check"></i></span>Tus usuarios ya pueden abrir Claude con su cuenta de Salesforce</li>
+                </ul>
+              </div>
+            </div>
+            <div class="st-step">
+              <div class="st-ic c3"><i data-ic="link"></i></div>
+              <div class="st-body">
+                <span class="st-num">Paso 3 de 5</span>
+                <h3>Conecta tus fuentes de datos</h3>
+                <p>Mientras más fuentes conectes, más contexto tendrá Claude para responder.</p>
+                <div class="src-grid">
+                  <div class="src"><span class="s-ic"><i data-ic="cloud"></i></span><b>Salesforce</b><span class="ok"><i data-ic="check"></i>Conectado automáticamente</span></div>
+                  <div class="src"><span class="s-ic"><i data-ic="mail"></i></span><b>Correo</b><span>Gmail <em>o</em> Outlook</span></div>
+                  <div class="src"><span class="s-ic"><i data-ic="calendar"></i></span><b>Calendario</b><span>Google Calendar <em>o</em> Microsoft Calendar</span></div>
+                  <div class="src"><span class="s-ic"><i data-ic="hash"></i></span><b>Colaboración</b><span>Slack <em>o</em> Microsoft Teams</span></div>
+                </div>
+                <div class="callout blue"><i data-ic="info"></i><span><b>Funciona sin importar si tu stack es Google Workspace o Microsoft 365.</b></span></div>
+              </div>
+            </div>
+            <div class="st-step">
+              <div class="st-ic c4"><i data-ic="sparkle"></i></div>
+              <div class="st-body">
+                <span class="st-num">Paso 4 de 5</span>
+                <h3>Empieza a usar los skills desde el chat</h3>
+                <p>Ya no tienes que escribir un prompt largo: escribe el comando del skill (o pídelo en tus palabras) y Claude ejecuta el resto. Cada skill ya sabe dónde buscar, qué revisar y cómo entregarte el resultado.</p>
+                <div class="chat">
+                  <div class="msg user"><code class="cmd" style="color:#fff">/daily-briefing</code></div>
+                  <div class="msg bot"><span class="run"><i data-ic="sparkle"></i>Ejecutando skill: daily-briefing</span><div>Revisando calendario, Salesforce, correo y documentos…</div><span class="typing"><i></i><i></i><i></i></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="st-step">
+              <div class="st-ic c5"><i data-ic="checkc"></i></div>
+              <div class="st-body">
+                <span class="st-num">Paso 5 de 5</span>
+                <h3>Revisa y aprueba</h3>
+                <p>Para los skills que generan borradores o escrituras (correos, actualización de registros), siempre hay un paso de aprobación humana antes de confirmar.</p>
+                <div class="approve">
+                  <div class="ap-head"><i data-ic="edit"></i>Borrador generado · requiere tu aprobación</div>
+                  <div class="ap-body"><small>Para: contacto@cliente-ejemplo.com · Asunto: Próximos pasos</small>Hola [Nombre], gracias por tu tiempo hoy. Como acordamos, te comparto el resumen y los próximos pasos…</div>
+                  <div class="ap-actions"><span class="ap-btn ok"><i data-ic="check"></i>Aprobar</span><span class="ap-btn"><i data-ic="edit"></i>Editar</span><span class="ap-btn"><i data-ic="x"></i>Descartar</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="st-nav">
+            <button class="btn btn-outline" id="stPrev" disabled><i data-ic="arrowl"></i><span class="t-long">Paso anterior</span></button>
+            <span class="st-count" id="stCount">Paso 1 de 5</span>
+            <button class="btn btn-primary" id="stNext"><span class="t-long">Siguiente paso</span><span class="t-short">Siguiente</span><i data-ic="arrow"></i></button>
+          </div>
+        </div>
+
+        <div class="final-cta reveal">
+          <p>Sin costo durante la Beta · Aprobación humana en cada escritura</p>
+          <a class="btn btn-primary btn-lg" href="https://agentexchange.salesforce.com/sales-cloud-in-claude-beta-access" target="_blank" rel="noopener"><i data-ic="key"></i>Solicita acceso Beta gratuito ahora</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMPIEZA HOY MISMO -->
+    <div class="section alt">
+      <div class="container">
+        <div class="sec-head">
+          <span class="kicker">Empieza hoy mismo</span>
+          <h2 class="h2">5 cosas que puedes pedirle a Claude hoy mismo</h2>
+          <p class="note">Basado en el catálogo completo de 37 skills disponibles en Claudeforce (27 de solo lectura, 10 que generan borradores con aprobación), seleccionamos estos 5 por su impacto inmediato y bajo nivel de fricción para empezar. Cada uno se ejecuta con un solo comando.</p>
+        </div>
+        <div class="qs-grid" id="qsGrid"></div>
+        <p class="swipe-hint">Desliza para ver los 5 →</p>
+        <div class="after-qs"><button class="btn btn-outline btn-lg" data-goto="claude" data-sub="claude-skills"><i data-ic="grid"></i>Ver las 37 skills disponibles</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- SUB-TAB 2.B: Skills ---------- -->
+  <div class="subpanel" data-group="claude" data-sub="claude-skills" data-title="Skills pre-diseñados y casos de uso">
+    <div class="section">
+      <div class="container">
+        <div class="sec-head">
+          <span class="kicker">Catálogo</span>
+          <h2 class="h2">Skills pre-diseñados y casos de uso</h2>
+          <p class="lead">37 skills en 8 categorías que cubren el ritmo completo de un equipo de ventas.</p>
+        </div>
+        <div class="req reveal">
+          <div class="req-ic"><i data-ic="checkc"></i></div>
+          <div>
+            <p>Si ya tienes conectado tu correo (Gmail o Outlook), calendario (Google o Microsoft), Salesforce y Slack/Teams, <b>puedes empezar a usar estos skills hoy mismo sin configuración adicional.</b></p>
+            <div class="req-srcs" id="reqSrcs"></div>
+          </div>
+        </div>
+        <div class="kpis">
+          <div class="kpi reveal"><strong data-count="37">37</strong><span>skills</span></div>
+          <div class="kpi reveal"><strong data-count="8">8</strong><span>categorías</span></div>
+          <div class="kpi ro reveal"><strong data-count="27">27</strong><span>solo lectura</span></div>
+          <div class="kpi dr reveal"><strong data-count="10">10</strong><span>generan borrador</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section alt tight">
+      <div class="container">
+        <div class="oneshot reveal">
+          <div>
+            <span class="kicker">Un comando, no un prompt</span>
+            <h3>Ya no tienes que escribirlo todo</h3>
+            <p>Cada skill ya sabe <b>dónde buscar</b> (Salesforce, correo, calendario, documentos y Slack o Teams), <b>qué revisar</b> y <b>cómo entregarte el resultado</b>. Solo escribe <b>/</b> y el nombre del skill, o pídelo en tus palabras: Claude hace el resto.</p>
+            <ul class="mini-list">
+              <li><span class="ck"><i data-ic="check"></i></span>Mismo resultado cada vez, sin redactar instrucciones</li>
+              <li><span class="ck"><i data-ic="check"></i></span>Funciona igual con Google Workspace o Microsoft 365</li>
+              <li><span class="ck"><i data-ic="check"></i></span>Los skills que escriben siempre piden tu aprobación</li>
+            </ul>
+          </div>
+          <div class="os-compare">
+            <div class="os-before"><small>Sin skill</small><p>"Revisa mi calendario de hoy, busca en Salesforce la cuenta y el deal de cada reunión, dime qué oportunidades cierran pronto, revisa los documentos relacionados y resume los correos sin leer de mis clientes…"</p></div>
+            <div class="os-arrow"><i data-ic="arrow"></i></div>
+            <div class="os-after"><small>Con skill</small><code class="cmd">/daily-briefing</code><span>Mismo resultado. Un solo comando.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="container">
+        <div class="cat-tools">
+          <div class="filters" role="group" aria-label="Filtrar por tipo">
+            <button class="flt active" data-ftype="all">Todos <span class="c">37</span></button>
+            <button class="flt" data-ftype="ro"><i data-ic="eye"></i>Solo lectura <span class="c">27</span></button>
+            <button class="flt" data-ftype="dr"><i data-ic="edit"></i>Genera borrador <span class="c">10</span></button>
+          </div>
+          <button class="toggle-all" id="toggleAll"><i data-ic="chev"></i><span>Expandir todo</span></button>
+        </div>
+        <div class="stage-row filters" role="group" aria-label="Filtrar por momento del ciclo">
+          <span class="stage-lbl">¿En qué momento del ciclo estás?</span>
+          <button class="flt active" data-fstage="all">Todos</button>
+          <button class="flt" data-fstage="prospect">Prospectar <span class="c">4</span></button>
+          <button class="flt" data-fstage="develop">Desarrollar <span class="c">9</span></button>
+          <button class="flt" data-fstage="close">Cerrar <span class="c">1</span></button>
+          <button class="flt" data-fstage="expand">Expandir <span class="c">5</span></button>
+          <button class="flt" data-fstage="manage">Gestionar <span class="c">18</span></button>
+        </div>
+        <p class="legend"><b>Fuentes:</b> Correo = Gmail u Outlook · Slack/Teams = Slack o Microsoft Teams · Documentos = Google Drive o Microsoft 365. Copia el comando, pégalo en Claude y listo.</p>
+        <p class="res-count no-pdf" id="resCount">Mostrando 37 de 37 skills</p>
+        <div id="catalog"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     TAB 3 — CONTACTO
+     ===================================================== -->
+<section class="tab-panel" id="tab-contact" role="tabpanel" data-title="Contacto">
+  <div class="section">
+    <div class="container">
+      <div class="sec-head center">
+        <span class="kicker">Contacto</span>
+        <h2 class="h2">Hablemos de tu transición a Core y de Claude Beta</h2>
+        <p class="lead">Escríbeme por el canal que prefieras y agendamos una sesión.</p>
+      </div>
+      <div class="contact-wrap">
+        <div class="card static contact-card reveal">
+          <div class="cc-banner"></div>
+          <div class="avatar" aria-label="Foto de Alfredo Rozo (placeholder)">
+            <svg viewBox="0 0 128 128" aria-hidden="true"><circle cx="64" cy="50" r="24" fill="#7FB8EA"/><path d="M18 128c4-26 22-40 46-40s42 14 46 40z" fill="#7FB8EA"/></svg>
+            <span class="ini">AR</span>
+          </div>
+          <div class="cc-body">
+            <h2>Alfredo Rozo</h2>
+            <p class="role">Reseller Account Executive, Salesforce</p>
+            <a class="cc-mail" href="mailto:arozo@salesforce.com"><i data-ic="mail"></i>arozo@salesforce.com</a>
+            <div class="cc-actions">
+              <a class="btn btn-wa btn-lg" href="https://wa.me/573103120328?text=Hola%20estoy%20revisando%20el%20documento%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n" target="_blank" rel="noopener"><i data-ic="chat"></i>Escríbeme por WhatsApp</a>
+              <button class="btn btn-navy btn-lg no-pdf" id="pdfBtn"><i data-ic="download"></i><span>Descargar PDF</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="card static side-card reveal">
+          <h3>En nuestra sesión revisamos</h3>
+          <p class="lead" style="font-size:15px">Una conversación práctica, enfocada en tu operación.</p>
+          <ol>
+            <li><div><b>Tu stack actual</b><span>Qué licencias de terceros podrías consolidar en Core.</span></div></li>
+            <li><div><b>Business case</b><span>Precio consolidado vs. suma de componentes para tu número de usuarios.</span></div></li>
+            <li><div><b>Plan de transición</b><span>Upgrade de EE a Core, blueprints y partners para tu industria.</span></div></li>
+            <li><div><b>Claude Beta</b><span>Acceso gratuito y los primeros skills para tu equipo.</span></div></li>
+          </ol>
+          <div class="quick-links no-pdf">
+            <button data-goto="core" data-sub="core-what"><i data-ic="layers"></i>Qué es Core</button>
+            <button data-goto="core" data-sub="core-why"><i data-ic="trend"></i>Por qué migrar</button>
+            <button data-goto="claude" data-sub="claude-start"><i data-ic="sparkle"></i>Claude paso a paso</button>
+            <button data-goto="claude" data-sub="claude-skills"><i data-ic="grid"></i>37 skills</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <span>© 2026 Salesforce, Inc. Contenido de referencia; precios, empaquetamiento y disponibilidad sujetos a cambio. Confirma con tu Account Executive.</span>
+    <span>Claude es una marca de Anthropic. · <a href="mailto:arozo@salesforce.com">arozo@salesforce.com</a></span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-x" data-close aria-label="Cerrar"><i data-ic="x"></i></button>
+    <div class="modal-head"><span class="modal-ic" id="modalIc"></span><div><small id="modalTag"></small><h3 id="modalTitle"></h3></div></div>
+    <div class="modal-body"><div class="det" id="modalBody"></div></div>
+  </div>
+</div>
+
+<div class="pdf-loader" id="pdfLoader"><div class="spin"></div><div>Generando PDF con todo el contenido…<br><small style="font-weight:500;opacity:.8">Esto puede tardar unos segundos</small></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------------- ICONS (generic line icons) ---------------- */
+const ICONS={
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  chat:'<path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.1A8.4 8.4 0 1 1 21 11.5z"/><path d="M9 10.5c.3 1.6 1.9 3.3 3.6 3.8"/>',
+  cloud:'<path d="M17.5 19a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.34 9.5 4.5 4.5 0 0 0 6.5 19z"/>',
+  hash:'<path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  trend:'<path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  building:'<path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M8 7h4M8 11h4M8 15h4M2 21h20"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+  chart:'<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/>',
+  life:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="m5.6 5.6 3.6 3.6M14.8 14.8l3.6 3.6M14.8 9.2l3.6-3.6M5.6 18.4l3.6-3.6"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
+  key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.3-9.3M17 6l3 3M14 9l2 2"/>',
+  power:'<path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
+  sparkle:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.7 1.8L21.5 18.5l-1.8.7L19 21l-.7-1.8L16.5 18.5l1.8-.7z"/>',
+  checkc:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  arrowl:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  chev:'<path d="m6 9 6 6 6-6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+  award:'<circle cx="12" cy="8" r="6"/><path d="M8.2 13.9 7 22l5-3 5 3-1.2-8.1"/>',
+  briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+  map:'<path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4z"/><path d="M8 2v16M16 6v16"/>',
+  pulse:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  calplus:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v5M9.5 16.5h5"/>',
+  alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',
+  headset:'<path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/><path d="M19 17v1a3 3 0 0 1-3 3h-3"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  db:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  flag:'<path d="M4 22V4M4 4h13l-2 4 2 4H4"/>',
+  refresh:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+  doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+  mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+  compass:'<circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6z"/>',
+  pen:'<path d="M12 19l7-7 3 3-7 7z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/><circle cx="11" cy="11" r="2"/>'
+};
+function ic(n,cls,stroke){return '<svg class="i'+(cls?' '+cls:'')+'" viewBox="0 0 24 24" fill="none" stroke="'+(stroke||'currentColor')+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
+function hydrateIcons(root){(root||document).querySelectorAll('i[data-ic]').forEach(function(el){el.outerHTML=ic(el.dataset.ic,el.className);});}
+
+/* ---------------- DATA ---------------- */
+const SRC={sf:['sf','cloud','Salesforce'],slack:['slack','hash','Slack/Teams'],mail:['mail','mail','Correo'],drive:['drive','folder','Documentos'],cal:['cal','calendar','Calendario']};
+function srcBadges(arr){return '<div class="srcs">'+arr.map(function(k){const s=SRC[k];return '<span class="src-b '+s[0]+'">'+ic(s[1])+s[2]+'</span>';}).join('')+'</div>';}
+function typeBadge(t){return t==='dr'?'<span class="type dr">'+ic('edit')+'Genera borrador</span>':'<span class="type ro">'+ic('eye')+'Solo lectura</span>';}
+
+const CATS=[
+ {key:'daily',name:'Daily Rhythm',sub:'Tu ritmo diario',ic:'sun',color:'linear-gradient(135deg,#F59E0B,#D97706)'},
+ {key:'pipe',name:'Pipeline & Forecast',sub:'Cobertura, riesgos y número',ic:'trend',color:'linear-gradient(135deg,#0176D3,#032D60)'},
+ {key:'deal',name:'Single Deal',sub:'Profundiza en una oportunidad',ic:'target',color:'linear-gradient(135deg,#7C3AED,#4C1D95)'},
+ {key:'acct',name:'Accounts & Expansion',sub:'Cuentas, clientes y crecimiento',ic:'building',color:'linear-gradient(135deg,#0E7490,#155E75)'},
+ {key:'pros',name:'Prospecting & Inbound',sub:'Nuevos prospectos y leads',ic:'search',color:'linear-gradient(135deg,#DB2777,#9D174D)'},
+ {key:'meet',name:'Meetings & Comms',sub:'Antes, durante y después de cada reunión',ic:'msg',color:'linear-gradient(135deg,#D97757,#B4492D)'},
+ {key:'hyg',name:'Hygiene & Knowledge',sub:'Datos limpios y respuestas internas',ic:'shield',color:'linear-gradient(135deg,#475569,#1E293B)'},
+ {key:'lead',name:'Leadership',sub:'Patrones y estilo',ic:'users',color:'linear-gradient(135deg,#16A370,#0B6E4F)'}
+];
+const STAGES={prospect:'Prospectar',develop:'Desarrollar',close:'Cerrar',expand:'Expandir',manage:'Gestionar'};
+/* 37 skills — fuente: Skill Map de Claudeforce */
+const SKILLS=[
+ {id:1,c:'daily',cmd:'daily-briefing',n:'Resumen matutino',ic:'sun',d:'Tu arranque del día: reuniones con contexto, deals que cierran pronto y correos sin leer.',o:'Briefing por secciones',p:'Dame mi resumen de hoy.',s:['sf','mail','drive'],t:'ro',st:'manage'},
+ {id:2,c:'daily',cmd:'weekly-wrap',n:'Resumen semanal',ic:'list',d:'Tu semana en revisión: qué se cerró, qué se movió, qué se retrasó y qué viene.',o:'Resumen + borrador para Slack/Teams',p:'Hazme el resumen de mi semana.',s:['sf','slack','mail'],t:'dr',st:'manage'},
+ {id:3,c:'daily',cmd:'calendar-events',n:'Agenda',ic:'calendar',d:'Tu calendario de Salesforce para cualquier rango de fechas.',o:'Lista de eventos',p:'¿Qué reuniones tengo esta semana?',s:['sf'],t:'ro',st:'manage'},
+ {id:4,c:'pipe',cmd:'pipeline-review',n:'Revisión de pipeline',ic:'list',d:'Tu pipeline: cobertura, antigüedad, conversión y deals en riesgo.',o:'Tablas por etapa + deals en riesgo',p:'Revisa mi pipeline de este trimestre.',s:['sf'],t:'ro',st:'manage'},
+ {id:5,c:'pipe',cmd:'team-pipeline',n:'Pipeline del equipo',ic:'users',d:'Consolidado para managers, por rep y por etapa.',o:'Tablas consolidadas',p:'¿Cómo va el pipeline de mi equipo?',s:['sf','slack'],t:'ro',st:'manage'},
+ {id:6,c:'pipe',cmd:'forecast-narrative',n:'Narrativa de forecast',ic:'doc',d:'La historia de tu commit, best-case y pipeline, lista para la llamada de forecast.',o:'Narrativa',p:'Prepárame la narrativa de forecast.',s:['sf'],t:'ro',st:'manage'},
+ {id:7,c:'pipe',cmd:'deal-signals',n:'Alertas de deals',ic:'alert',d:'Los cambios que importan: deals silenciosos, fechas que se corren y cambios de champion.',o:'Digest de alertas',p:'¿Qué deals necesitan atención esta semana?',s:['sf','mail','drive'],t:'ro',st:'manage'},
+ {id:8,c:'pipe',cmd:'deal-slip-scenario',n:'Escenario de retraso',ic:'refresh',d:'Modela el impacto en tu cuota y cobertura si un deal se retrasa.',o:'Modelo de escenario',p:'¿Qué pasa con mi número si [deal] se mueve al próximo trimestre?',s:['sf'],t:'ro',st:'manage'},
+ {id:9,c:'deal',cmd:'deal-review',n:'Salud de un deal',ic:'pulse',d:'Score de salud, riesgos, vacíos de información y próximas acciones.',o:'Scorecard + riesgos',p:'¿Cómo está la salud de mi deal con [cliente]?',s:['sf','slack','mail','drive'],t:'ro',st:'develop'},
+ {id:10,c:'deal',cmd:'deal-advance-gap',n:'Qué falta para avanzar',ic:'flag',d:'Lo que te falta para avanzar de etapa o cerrar.',o:'Checklist de brechas',p:'¿Qué necesito para avanzar [deal] a la siguiente etapa?',s:['sf','slack','mail','drive'],t:'ro',st:'develop'},
+ {id:11,c:'deal',cmd:'close-plan',n:'Plan de cierre',ic:'doc',d:'Business case y camino hasta la firma.',o:'Plan de acción mutuo con fechas',p:'Arma un plan de cierre para [deal].',s:['sf','mail','drive'],t:'ro',st:'close'},
+ {id:12,c:'deal',cmd:'handle-objection',n:'Manejo de objeciones',ic:'shield',d:'Trabaja una objeción con historial de win-loss y citas reales de clientes.',o:'Respuesta + puntos de prueba',p:'El cliente dice que somos muy caros, ¿cómo respondo?',s:['sf','drive'],t:'ro',st:'develop'},
+ {id:13,c:'deal',cmd:'stakeholder-map',n:'Mapa de stakeholders',ic:'map',d:'Roles, influencia, sentimiento de cada contacto y quién falta en la conversación.',o:'Mapa de stakeholders',p:'Dame el mapa de stakeholders de mi cuenta [nombre].',s:['sf','slack','mail','drive'],t:'ro',st:'develop'},
+ {id:14,c:'deal',cmd:'update-opportunity',n:'Actualizar oportunidad',ic:'edit',d:'Avanza la etapa, mueve la fecha de cierre y define próximos pasos.',o:'Registro actualizado + link',p:'Pasa [deal] a Negociación con cierre el [fecha].',s:['sf'],t:'dr',st:'manage'},
+ {id:15,c:'acct',cmd:'account-context',n:'Contexto 360 de cuenta',ic:'compass',d:'Visión 360 de la cuenta cruzando Salesforce, correo, documentos y Slack/Teams.',o:'Brief multi-sección',p:'Dame el panorama completo de [cuenta].',s:['sf','slack','mail','drive'],t:'ro',st:'develop'},
+ {id:16,c:'acct',cmd:'account-plan',n:'Plan de cuenta',ic:'layers',d:'Lee o crea el plan de cuenta (Account Plan).',o:'Plan de cuenta (registro/doc)',p:'Crea el plan de cuenta de [cuenta].',s:['sf'],t:'dr',st:'expand'},
+ {id:17,c:'acct',cmd:'account-tiering',n:'Priorización de cartera',ic:'layers',d:'Clasifica y puntúa tu cartera según el fit con tu ICP.',o:'Lista por niveles y puntaje',p:'Prioriza mis cuentas para este trimestre.',s:['sf','mail'],t:'ro',st:'manage'},
+ {id:18,c:'acct',cmd:'customer-health',n:'Salud del cliente',ic:'pulse',d:'Chequeo de salud del cliente y preparación de tu QBR.',o:'Scorecard de salud + agenda de QBR',p:'¿Cómo está la salud de [cliente] antes del QBR?',s:['sf','mail','drive'],t:'ro',st:'expand'},
+ {id:19,c:'acct',cmd:'expansion-whitespace',n:'Whitespace de expansión',ic:'grid',d:'Lo que el cliente ya tiene vs. lo que podría tener, con evidencia por cada jugada.',o:'Matriz de whitespace',p:'¿Dónde puedo expandirme en [cuenta]?',s:['sf','mail','drive'],t:'ro',st:'expand'},
+ {id:20,c:'acct',cmd:'renewal-radar',n:'Radar de renovaciones',ic:'clock',d:'Renovaciones con timing, riesgo y potencial de uplift.',o:'Lista de renovaciones',p:'Muéstrame las renovaciones de los próximos 90 días.',s:['sf','slack','mail'],t:'ro',st:'expand'},
+ {id:21,c:'acct',cmd:'customer-voice',n:'Voz del cliente',ic:'mic',d:'Citas directas de tus clientes sobre un tema específico.',o:'Citas agrupadas por tema',p:'¿Qué dicen los clientes sobre [tema]?',s:['sf','mail','drive'],t:'ro',st:'expand'},
+ {id:22,c:'pros',cmd:'research-prospect',n:'Investigar prospecto',ic:'search',d:'Investigación de empresa o contacto, con fit contra tu ICP.',o:'Brief de investigación',p:'Investiga a [empresa] antes de contactarla.',s:['sf'],t:'ro',st:'prospect'},
+ {id:23,c:'pros',cmd:'draft-outreach',n:'Correo de prospección',ic:'send',d:'Correo de outreach personalizado para tu prospecto.',o:'Borrador de correo',p:'Escribe un correo para reactivar a [contacto].',s:['sf','mail'],t:'dr',st:'prospect'},
+ {id:24,c:'pros',cmd:'lead-triage',n:'Triage de lead',ic:'flag',d:'Califica y enruta un lead entrante.',o:'Score + recomendación de ruteo',p:'¿Qué hago con este lead nuevo de [empresa]?',s:['sf','slack','mail'],t:'ro',st:'prospect'},
+ {id:25,c:'pros',cmd:'assign-target-to-sdr',n:'Asignar a agente SDR',ic:'users',d:'Entrega un lead a un agente SDR de Agentforce para que lo trabaje.',o:'Confirmación de la acción',p:'Asigna [lead] al agente SDR.',s:['sf'],t:'dr',st:'prospect'},
+ {id:26,c:'meet',cmd:'call-prep',n:'Preparar llamada',ic:'doc',d:'Brief previo a la reunión: asistentes, historial y preguntas clave.',o:'Brief pre-llamada',p:'Prepárame para mi reunión con [cliente].',s:['sf','slack','mail','drive'],t:'ro',st:'develop'},
+ {id:27,c:'meet',cmd:'call-follow-up',n:'Transcript a seguimiento',ic:'mic',d:'Convierte la transcripción en un correo de seguimiento y un resumen para tu equipo en Slack/Teams.',o:'Borrador de correo + resumen para el equipo',p:'Convierte la transcripción de mi última llamada en un correo de seguimiento.',s:['sf','slack','mail','drive'],t:'dr',st:'develop'},
+ {id:28,c:'meet',cmd:'summarize-conversation-transcript',n:'Resumen de llamada',ic:'phone',d:'Resume una llamada de Salesforce Voice o Video.',o:'Resumen de la llamada',p:'Resume mi última llamada con [cliente].',s:['sf'],t:'ro',st:'develop'},
+ {id:29,c:'meet',cmd:'schedule-meeting',n:'Agendar y registrar reunión',ic:'calplus',d:'Encuentra horario, redacta la invitación, agenda y registra el evento en Salesforce.',o:'Invitación + evento registrado',p:'Agenda una llamada de seguimiento con [cliente] la próxima semana.',s:['sf','mail'],t:'dr',st:'develop'},
+ {id:30,c:'meet',cmd:'inbox-sweep',n:'Barrido de bandeja',ic:'inbox',d:'Prioriza en lote tus correos sin leer y prepara las respuestas.',o:'Lista priorizada + borradores de respuesta',p:'Revisa mi bandeja y prepara respuestas.',s:['sf','mail'],t:'dr',st:'manage'},
+ {id:31,c:'meet',cmd:'rep-context',n:'Contexto de rep para 1:1',ic:'user',d:'Ponte al día sobre un rep antes de tu 1:1.',o:'Brief del rep',p:'Prepárame para mi 1:1 con [rep].',s:['sf','slack'],t:'ro',st:'manage'},
+ {id:32,c:'hyg',cmd:'sfdc-hygiene-check',n:'Higiene de CRM',ic:'shield',d:'Audita oportunidades con campos vacíos o desactualizados.',o:'Checklist de correcciones',p:'Revisa la higiene de mi pipeline.',s:['sf','mail','drive'],t:'ro',st:'manage'},
+ {id:33,c:'hyg',cmd:'log-activity',n:'Registrar actividad',ic:'edit',d:'Registra una llamada, reunión o correo como tarea en Salesforce.',o:'Registro creado + link',p:'Registra mi llamada de hoy con [contacto].',s:['sf'],t:'dr',st:'manage'},
+ {id:34,c:'hyg',cmd:'query-activity-history',n:'Historial de actividad',ic:'clock',d:'Toda la actividad de un registro, en orden.',o:'Línea de tiempo de actividad',p:'¿Qué ha pasado con [cuenta] en los últimos 60 días?',s:['sf'],t:'ro',st:'manage'},
+ {id:35,c:'hyg',cmd:'find-internal-answer',n:'Respuesta interna',ic:'search',d:'Encuentra políticas, aprobadores o documentos en todas tus fuentes.',o:'Respuesta + links a las fuentes',p:'¿Quién aprueba descuentos mayores al 20%?',s:['sf','slack','mail','drive'],t:'ro',st:'manage'},
+ {id:36,c:'lead',cmd:'win-loss-review',n:'Análisis win-loss',ic:'chart',d:'Patrones en tus oportunidades cerradas: qué gana y qué pierde.',o:'Análisis de patrones',p:'¿Por qué perdimos deals el último semestre?',s:['sf','mail','drive'],t:'ro',st:'manage'},
+ {id:37,c:'lead',cmd:'voice-profile',n:'Perfil de voz',ic:'pen',d:'Aprende tu estilo de escritura una sola vez, para que los borradores suenen a ti.',o:'Configuración guardada',p:'Aprende mi estilo de escritura.',s:['mail'],t:'dr',st:'manage'}
+];
+
+const QUICK=[
+ {id:1,n:'Resumen matutino',what:'Reúne tus reuniones del día con contexto, los deals que están por cerrar y tus correos sin leer — todo en un solo briefing organizado por secciones.',why:'es el primer "wow": en segundos ves unificadas tus fuentes (calendario, Salesforce, correo y documentos) sin abrir nada.',p:'Dame mi resumen de hoy.'},
+ {id:9,n:'Salud de un deal',what:'Da un score de salud del deal, identifica riesgos, vacíos de información y próximas acciones recomendadas.',why:'convierte una revisión manual de 20 minutos en una respuesta instantánea sobre tu oportunidad más importante.',p:'¿Cómo está la salud de mi deal con [cliente]?'},
+ {id:27,n:'Transcript a seguimiento',what:'Toma la transcripción de una llamada y genera un correo de seguimiento para el cliente y un resumen para el equipo en Slack/Teams.',why:'ahorra el trabajo más tedioso post-llamada, con un resultado inmediato y tangible: un borrador listo.',p:'Convierte la transcripción de mi última llamada en un correo de seguimiento.'},
+ {id:13,n:'Mapa de stakeholders',what:'Mapea roles, nivel de influencia y sentimiento de cada contacto en la cuenta, y señala quién falta en la conversación.',why:'da visibilidad estratégica inmediata en cuentas grandes o complejas, algo difícil de armar a mano.',p:'Dame el mapa de stakeholders de mi cuenta [nombre].'},
+ {id:29,n:'Agenda y registra una reunión',what:'Encuentra el horario disponible, redacta la invitación, agenda el evento y lo registra en Salesforce automáticamente.',why:'demuestra la capacidad de acción de forma segura y de bajo riesgo: Claude también actúa, no solo informa.',dl:'Genera borrador / acción',p:'Agenda una llamada de seguimiento con [cliente] la próxima semana y regístrala en Salesforce.'}
+];
+
+const DETAILS={
+ slack:{t:'Slack Business+ with Slackbot',ic:'hash',scope:'Sales Core · Service Core',html:
+  '<h5>Qué es</h5><p>Plan de Slack que trae <b>Slackbot</b>, el asistente de IA nativo de Slack, con un tope de <b>15 mensajes/prompts de Slackbot por usuario por semana</b> (se reinicia cada lunes).</p>'+
+  '<ul><li>Cubre cualquier búsqueda, acción CRUD contra el CRM o interacción vía MCP client.</li><li>Cada llamada cuenta contra ese límite semanal.</li></ul>'+
+  '<h5>Además incluye</h5><ul class="cols"><li>Historial de mensajes ilimitado</li><li>Slack Connect</li><li>Huddles</li><li>Canvas</li><li>Lists</li><li>Guests</li><li>Workflow Builder</li></ul>'+
+  '<h5>Para usuarios autenticados con Salesforce</h5><ul><li>Salesforce Lists</li><li>Objetos de Salesforce en Canvas</li></ul>'+
+  '<div class="callout amber">'+ic('alert')+'<span><b>Diferencia clave:</b> el límite de 15 conversaciones por semana es la diferencia frente a Enterprise+, que no tiene tope (prácticamente ilimitado).</span></div>'},
+ premier:{t:'Premier Success Plan',ic:'life',scope:'Sales Core · Service Core',html:
+  '<h5>Qué es</h5><p>Plan de soporte y adopción incluido en Core para que tus equipos aprovechen la plataforma desde el primer día.</p>'+
+  '<h5>Soporte</h5><ul><li>Soporte técnico 24/7/365 para incidentes de Severidad 1</li><li>Acceso a expertos de Salesforce para guía de configuración y mejores prácticas</li></ul>'+
+  '<h5>Adopción y habilitación</h5><ul><li>Sesiones de coaching personalizadas para administradores y desarrolladores</li><li>Recursos de onboarding y adopción personalizados</li><li>Guía proactiva vía Success Plans y aprendizaje curado</li><li>Acceso ilimitado a Trailhead</li></ul>'+
+  '<h5>Evolución continua</h5><ul><li>Recursos de preparación para releases estacionales</li><li>Guía de configuración para adoptar nuevas capacidades</li></ul>'},
+ tableau:{t:'Tableau Next with Tableau Agent',ic:'chart',scope:'Sales Core · Service Core',html:
+  '<h5>Licenciamiento incluido en Core</h5><ul><li><b>1 licencia Standard Consumer</b> por usuario</li><li><b>1 licencia Standard Creator</b> por organización</li></ul>'+
+  '<h5>Tableau Agent (antes "Concierge")</h5><p>Experiencia agéntica y conversacional nativa de Tableau Next:</p><ul><li>Haz preguntas en lenguaje natural sobre tus datos</li><li>Obtén análisis y visualizaciones sin construir dashboards manualmente</li><li>Accesible desde Slackbot, Agentforce Coworker o cualquier agente vía MCP</li></ul>'+
+  '<div class="callout teal">'+ic('zap')+'<span><b>Sin límite de consumo:</b> las consultas de datos, las transformaciones batch y el uso de IA son <i>unmetered</i> (no medidos).</span></div>'},
+ callintel:{t:'Call Intelligence & Sales Emails',ic:'phone',scope:'Solo Sales Core',html:
+  '<h5>Qué es</h5><p>Dos capacidades combinadas dentro de Sales Core:</p>'+
+  '<h5>Call Intelligence (Basic Momentum)</h5><ul><li>Graba y analiza llamadas de ventas</li><li>Transcripción automática</li><li>Resúmenes de IA ("recaps")</li><li>Detección de insights: objeciones, menciones de precio o de competidores</li><li>Métricas de talk-time y palabras clave</li></ul>'+
+  '<h5>Sales Emails (Einstein GPT Sales Access)</h5><ul><li>Redacta automáticamente correos de prospección y seguimiento usando IA generativa</li></ul>'+
+  '<h5>Dónde encaja en Core</h5><p>En el paquete Core 2.0, Call Intelligence &amp; Sales Emails se presenta como parte del valor adicional de Core sobre Pro, junto con Pipeline Inspection, Opportunity Scoring, Momentum, Premier Success, Slack Business+ y Tableau Next.</p>'+
+  '<div class="callout gray">'+ic('info')+'<span><b>Alcance:</b> desde febrero de 2026, la Conversation Intelligence básica (transcripción, resúmenes de llamada e insights básicos) ya venía incluida gratis en toda edición Agentforce Sales (hasta 2.000 licencias en Enterprise Edition). Las capacidades generativas más avanzadas (Call Explorer, Sales Signals) requieren el add-on Agentforce for Sales, que es distinto del paquete base.</span></div>'}
+};
+
+/* ---------------- RENDER dynamic sections ---------------- */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function copyBtn(p,label){return '<button class="copy" data-copy="'+esc(p)+'">'+ic('copy')+'<span>'+(label||'Copiar prompt')+'</span></button>';}
+
+const byId={}; SKILLS.forEach(function(s){byId[s.id]=s;});
+const catOf={}; CATS.forEach(function(c){catOf[c.key]=c;});
+function cmdRow(cmd,label){return '<div class="cmd-row"><code class="cmd">/'+cmd+'</code>'+copyBtn('/'+cmd,label||'Copiar')+'</div>';}
+
+document.getElementById('qsGrid').innerHTML=QUICK.map(function(q,i){
+  const s=byId[q.id];
+  const tb=s.t==='dr'?'<span class="type dr">'+ic('edit')+(q.dl||'Genera borrador')+' · requiere aprobación</span>':typeBadge('ro');
+  return '<article class="qs-card card reveal">'+
+   '<div class="qs-top"><span class="badge-now">⚡ Empieza ahora</span><span class="qs-n">0'+(i+1)+'</span></div>'+
+   '<div class="qs-ic">'+ic(s.ic)+'</div><span class="qs-cat">'+catOf[s.c].name+' · Skill #'+s.id+'</span><h3>'+q.n+'</h3>'+
+   '<p class="qs-what">'+q.what+'</p><p class="qs-why"><b>Por qué empezar aquí:</b> '+q.why+'</p>'+
+   '<div class="qs-meta">'+srcBadges(s.s)+tb+'</div>'+
+   '<div class="prompt"><small>Comando del skill</small>'+cmdRow(s.cmd,'Copiar comando')+'<span class="alt">o dilo en tus palabras: “'+esc(q.p)+'”</span></div></article>';
+}).join('');
+
+document.getElementById('reqSrcs').innerHTML=srcBadges(['sf','mail','cal','drive','slack']);
+
+document.getElementById('catalog').innerHTML=CATS.map(function(c,ci){
+  const list=SKILLS.filter(function(s){return s.c===c.key;});
+  const ro=list.filter(function(s){return s.t==='ro';}).length, dr=list.length-ro;
+  return '<div class="acc'+(ci===0?' open':'')+'" data-cat="'+c.key+'">'+
+   '<button class="acc-head" aria-expanded="'+(ci===0)+'">'+
+    '<span class="acc-ic" style="background:'+c.color+'">'+ic(c.ic)+'</span>'+
+    '<span class="acc-title"><b>'+c.name+'</b><small>'+c.sub+'</small></span>'+
+    '<span class="acc-count"><span class="n" data-n>'+list.length+' skills</span>'+(ro?'<span class="type ro">'+ic('eye')+ro+' lectura</span>':'')+(dr?'<span class="type dr">'+ic('edit')+dr+' borrador</span>':'')+'</span>'+
+    ic('chev','acc-chev')+
+   '</button>'+
+   '<div class="acc-body"'+(ci===0?' style="max-height:none"':'')+'><div class="acc-inner"><div class="skills-grid">'+
+   list.map(function(s){
+     return '<div class="skill" data-type="'+s.t+'" data-stage="'+s.st+'">'+
+      '<div class="sk-top"><span class="sk-ic" style="color:#0176D3">'+ic(s.ic)+'</span><h4>'+s.n+'</h4><span class="sk-num">#'+s.id+'</span></div>'+
+      '<p>'+s.d+'</p>'+
+      '<div class="sk-out"><b>Te entrega:</b> '+s.o+'</div>'+
+      cmdRow(s.cmd)+
+      '<span class="sk-alt">o en tus palabras: “'+esc(s.p)+'”</span>'+
+      '<div class="sk-meta">'+srcBadges(s.s)+'<div class="sk-badges"><span class="stg">'+STAGES[s.st]+'</span>'+typeBadge(s.t)+'</div></div></div>';
+   }).join('')+
+   '</div></div></div></div>';
+}).join('');
+
+hydrateIcons();
+
+/* ---------------- HEADER HEIGHT ---------------- */
+const header=document.getElementById('siteHeader');
+function setH(){document.documentElement.style.setProperty('--hdr-h',header.offsetHeight+'px');}
+setH(); window.addEventListener('resize',setH);
+
+/* ---------------- REVEAL ON SCROLL ---------------- */
+function countUp(root){
+  const els=root.matches&&root.matches('[data-count]')?[root]:Array.prototype.slice.call(root.querySelectorAll('[data-count]'));
+  els.forEach(function(el){
+    if(el.dataset.done)return; el.dataset.done=1;
+    const end=+el.dataset.count, t0=performance.now(), dur=1100;
+    (function step(t){const k=Math.min(1,(t-t0)/dur), v=Math.round(end*(1-Math.pow(1-k,3)));el.textContent=v;if(k<1)requestAnimationFrame(step);})(t0);
+  });
+}
+function onReveal(el){
+  el.classList.add('in'); countUp(el);
+  if(el.querySelector('#ring')||el.id==='ring'){animateRing();}
+}
+let io=null;
+if('IntersectionObserver' in window){
+  io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){onReveal(en.target);io.unobserve(en.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+}
+function observeReveals(){document.querySelectorAll('.reveal:not(.in)').forEach(function(el){if(io)io.observe(el);else onReveal(el);});}
+function animateRing(){const c=document.querySelector('#ring .prog');if(c)c.style.strokeDashoffset=(477.5-310.4).toFixed(1);}
+
+/* ---------------- TABS & SUB-TABS ---------------- */
+const tabBtns=Array.prototype.slice.call(document.querySelectorAll('.tab'));
+const tabsNav=document.querySelector('.tabs');
+function showTab(id,scroll){
+  tabBtns.forEach(function(t){const on=t.dataset.tab===id;t.classList.toggle('active',on);t.setAttribute('aria-selected',on);});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.toggle('active',p.id==='tab-'+id);});
+  const a=document.querySelector('.tab.active'); if(a&&tabsNav){tabsNav.scrollTo({left:a.offsetLeft-24,behavior:'smooth'});}
+  if(scroll!==false)window.scrollTo({top:0,behavior:'smooth'});
+  requestAnimationFrame(observeReveals);
+}
+function showSub(group,sub,scroll){
+  document.querySelectorAll('.pill[data-group="'+group+'"]').forEach(function(p){p.classList.toggle('active',p.dataset.sub===sub);});
+  document.querySelectorAll('.subpanel[data-group="'+group+'"]').forEach(function(p){p.classList.toggle('active',p.dataset.sub===sub);});
+  if(scroll){
+    const wrap=document.querySelector('#tab-'+group+' .pills-wrap');
+    if(wrap){const y=wrap.getBoundingClientRect().top+window.scrollY-header.offsetHeight; if(window.scrollY>y-2)window.scrollTo({top:y,behavior:'smooth'});}
+  }
+  requestAnimationFrame(observeReveals);
+}
+function goTo(tab,sub){
+  const changing=!document.getElementById('tab-'+tab).classList.contains('active');
+  showTab(tab, changing||!sub);
+  if(sub){showSub(tab,sub,!changing);}
+  try{history.replaceState(null,'','#'+(sub||tab));}catch(e){}
+}
+tabBtns.forEach(function(b){b.addEventListener('click',function(){goTo(b.dataset.tab);});});
+document.querySelectorAll('.pill').forEach(function(p){p.addEventListener('click',function(){showSub(p.dataset.group,p.dataset.sub,true);try{history.replaceState(null,'','#'+p.dataset.sub);}catch(e){}});});
+document.addEventListener('click',function(e){
+  const g=e.target.closest('[data-goto]'); if(g){e.preventDefault();goTo(g.dataset.goto,g.dataset.sub);}
+});
+(function initHash(){
+  const h=(location.hash||'').slice(1);
+  const map={'core':['core'],'core-what':['core','core-what'],'core-why':['core','core-why'],'claude':['claude'],'claude-start':['claude','claude-start'],'claude-skills':['claude','claude-skills'],'contact':['contact']};
+  if(map[h]){showTab(map[h][0],false);if(map[h][1])showSub(map[h][0],map[h][1],false);}
+})();
+observeReveals();
+
+/* ---------------- STEPPER ---------------- */
+const steps=Array.prototype.slice.call(document.querySelectorAll('#stepper .st-step'));
+const dots=Array.prototype.slice.call(document.querySelectorAll('#stepper .st-dot'));
+const stBar=document.getElementById('stBar'), stPrev=document.getElementById('stPrev'), stNext=document.getElementById('stNext'), stCount=document.getElementById('stCount');
+const stProg=document.querySelector('#stepper .st-progress');
+let cur=0;
+function goStep(n){
+  if(n<0||n>=steps.length||n===cur&&steps[n].classList.contains('active'))return;
+  const back=n<cur;
+  steps.forEach(function(s,i){s.classList.remove('active','back');if(i===n){if(back)s.classList.add('back');void s.offsetWidth;s.classList.add('active');}});
+  dots.forEach(function(d,i){d.classList.toggle('active',i===n);d.classList.toggle('done',i<n);});
+  stBar.style.width=((n+1)/steps.length*100)+'%';
+  stProg.setAttribute('aria-valuenow',n+1);
+  stPrev.disabled=n===0; stNext.disabled=n===steps.length-1;
+  stCount.textContent='Paso '+(n+1)+' de '+steps.length;
+  cur=n;
+}
+stPrev.addEventListener('click',function(){goStep(cur-1);});
+stNext.addEventListener('click',function(){goStep(cur+1);});
+dots.forEach(function(d){d.addEventListener('click',function(){goStep(+d.dataset.go);});});
+document.getElementById('stepper').addEventListener('keydown',function(e){if(e.key==='ArrowRight')goStep(cur+1);if(e.key==='ArrowLeft')goStep(cur-1);});
+
+/* ---------------- COPY PROMPT ---------------- */
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show');},1800);}
+function copyText(txt){
+  if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(txt).then(function(){return true;},function(){return fallback();});}
+  return Promise.resolve(fallback());
+  function fallback(){const ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(e){}ta.remove();return ok;}
+}
+document.addEventListener('click',function(e){
+  const b=e.target.closest('.copy'); if(!b)return;
+  copyText(b.dataset.copy).then(function(ok){
+    const s=b.querySelector('span'), old=s.dataset.old||s.textContent; s.dataset.old=old;
+    b.classList.add('copied'); s.textContent=ok?'¡Copiado!':'Copia manual';
+    if(ok)toast('Prompt copiado. Pégalo en Claude.');
+    setTimeout(function(){b.classList.remove('copied');s.textContent=old;},1800);
+  });
+});
+
+/* ---------------- ACCORDION ---------------- */
+function setAcc(acc,open){
+  const h=acc.querySelector('.acc-head'), b=acc.querySelector('.acc-body');
+  h.setAttribute('aria-expanded',open); acc.classList.toggle('open',open);
+  if(open){
+    b.style.maxHeight=b.scrollHeight+'px';
+    const done=function(){if(acc.classList.contains('open'))b.style.maxHeight='none';b.removeEventListener('transitionend',done);};
+    b.addEventListener('transitionend',done);
+  }else{
+    b.style.maxHeight=b.scrollHeight+'px'; void b.offsetHeight; b.style.maxHeight='0px';
+  }
+}
+const accs=Array.prototype.slice.call(document.querySelectorAll('.acc'));
+accs.forEach(function(a){a.querySelector('.acc-head').addEventListener('click',function(){setAcc(a,!a.classList.contains('open'));syncToggle();});});
+const toggleAll=document.getElementById('toggleAll');
+function syncToggle(){const vis=accs.filter(function(a){return !a.classList.contains('cat-hidden');});const all=vis.every(function(a){return a.classList.contains('open');});toggleAll.querySelector('span').textContent=all?'Contraer todo':'Expandir todo';toggleAll.querySelector('svg').style.transform=all?'rotate(180deg)':'';}
+toggleAll.addEventListener('click',function(){const vis=accs.filter(function(a){return !a.classList.contains('cat-hidden');});const all=vis.every(function(a){return a.classList.contains('open');});vis.forEach(function(a){setAcc(a,!all);});syncToggle();});
+
+/* filters (tipo + momento del ciclo) */
+const F={type:'all',stage:'all'};
+function applyFilters(){
+  let total=0; const active=F.type!=='all'||F.stage!=='all';
+  accs.forEach(function(a){
+    let n=0;
+    a.querySelectorAll('.skill').forEach(function(s){
+      const ok=(F.type==='all'||s.dataset.type===F.type)&&(F.stage==='all'||s.dataset.stage===F.stage);
+      s.classList.toggle('hidden',!ok); if(ok)n++;
+    });
+    total+=n;
+    a.classList.toggle('cat-hidden',n===0);
+    a.querySelector('[data-n]').textContent=n+(n===1?' skill':' skills');
+    if(active&&n>0&&!a.classList.contains('open'))setAcc(a,true);
+    else if(a.classList.contains('open'))a.querySelector('.acc-body').style.maxHeight='none';
+  });
+  document.getElementById('resCount').textContent='Mostrando '+total+' de 37 skills';
+  syncToggle();
+}
+document.querySelectorAll('.flt[data-ftype]').forEach(function(f){f.addEventListener('click',function(){
+  document.querySelectorAll('.flt[data-ftype]').forEach(function(x){x.classList.toggle('active',x===f);});
+  F.type=f.dataset.ftype; applyFilters();
+});});
+document.querySelectorAll('.flt[data-fstage]').forEach(function(f){f.addEventListener('click',function(){
+  document.querySelectorAll('.flt[data-fstage]').forEach(function(x){x.classList.toggle('active',x===f);});
+  F.stage=f.dataset.fstage; applyFilters();
+});});
+
+/* ---------------- MODAL ---------------- */
+const modal=document.getElementById('modal'); let lastFocus=null;
+function openModal(key,accent){
+  const d=DETAILS[key]; if(!d)return;
+  lastFocus=document.activeElement;
+  modal.className='modal open accent-'+(accent||'sales');
+  document.getElementById('modalIc').innerHTML=ic(d.ic);
+  document.getElementById('modalTag').textContent=(accent==='service'?'Service Core Edition':'Sales Core Edition')+' · Componente incluido';
+  document.getElementById('modalTitle').textContent=d.t;
+  document.getElementById('modalBody').innerHTML=d.html;
+  modal.querySelector('.modal-body').scrollTop=0;
+  modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+  setTimeout(function(){modal.querySelector('.modal-x').focus();},50);
+}
+function closeModal(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';if(lastFocus)lastFocus.focus();}
+document.addEventListener('click',function(e){
+  const m=e.target.closest('[data-detail]'); if(m){openModal(m.dataset.detail,m.dataset.accent);return;}
+  if(e.target.closest('[data-close]'))closeModal();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))closeModal();});
+
+/* ---------------- ROI CALCULATOR ---------------- */
+const rU=document.getElementById('rUsers'), rC=document.getElementById('rCost');
+const fmt=function(v){return '$'+Math.round(v).toLocaleString('en-US');};
+function calc(){
+  const u=+rU.value, c=+rC.value, curY=u*c*12, coreY=u*195*12, save=curY-coreY, pct=curY?save/curY*100:0;
+  document.getElementById('oUsers').textContent=u.toLocaleString('en-US');
+  document.getElementById('oCost').textContent='$'+c;
+  document.getElementById('cCur').textContent=fmt(curY);
+  document.getElementById('cCore').textContent=fmt(coreY);
+  document.getElementById('cSave').textContent=fmt(save);
+  document.getElementById('cPct').textContent=Math.round(pct)+'% menos';
+}
+rU.addEventListener('input',calc); rC.addEventListener('input',calc); calc();
+
+/* ---------------- PDF EXPORT (all tabs + sub-tabs + modal details) ---------------- */
+function cleanClone(el){
+  const c=el.cloneNode(true);
+  c.querySelectorAll('.no-pdf').forEach(function(n){n.remove();});
+  if(c.id)c.removeAttribute('id');
+  c.querySelectorAll('[id]').forEach(function(n){n.removeAttribute('id');});
+  c.classList.add('active');
+  return c;
+}
+function wrap(title,sub){
+  const w=document.createElement('div'); w.className='pdf-mode';
+  if(title){const h=document.createElement('div');h.className='pdf-h';h.innerHTML='<span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'');w.appendChild(h);}
+  return w;
+}
+function buildSections(){
+  const S=[];
+  const tc=document.getElementById('tab-core'), tl=document.getElementById('tab-claude'), tk=document.getElementById('tab-contact');
+  const sub=function(panel,key){return panel.querySelector('.subpanel[data-sub="'+key+'"]');};
+
+  /* 1 — cover + Core hero + Qué es Core */
+  const s1=wrap(null);
+  const cover=document.createElement('div'); cover.className='pdf-cover';
+  cover.innerHTML='<div class="logo-row"><img src="https://a.sfdcstatic.com/shared/images/c360-nav/salesforce-with-type-logo.svg" alt="Salesforce" crossorigin="anonymous"></div>'+
+    '<h1>Nueva Edición Core + Claude en Salesforce (Beta y Gratis)</h1>'+
+    '<p>Guía para clientes Enterprise: qué incluye Core Edition, por qué migrar ahora y cómo empezar con Claude y sus 37 skills pre-diseñados.</p>'+
+    '<div class="who"><b>Alfredo Rozo</b> · Reseller Account Executive, Salesforce · arozo@salesforce.com · WhatsApp: wa.me/573103120328</div>';
+  s1.appendChild(cover);
+  const h1=document.createElement('div');h1.className='pdf-h';h1.innerHTML='<span>1. Nueva Edición Core</span><small>1.A · Qué es Core</small>';s1.appendChild(h1);
+  s1.appendChild(cleanClone(tc.querySelector('.hero')));
+  s1.appendChild(cleanClone(sub(tc,'core-what')));
+  S.push(s1);
+
+  /* 2 — expanded component details (modal content) */
+  const s2=wrap('1.A · Detalle de componentes adicionales de Core','Contenido de "Ver más detalles"');
+  Object.keys(DETAILS).forEach(function(k){
+    const d=DETAILS[k], b=document.createElement('div'); b.className='detail-block';
+    if(k==='callintel'){b.style.cssText='--acc:#1B8265;--acc2:#16A370;--acc-bg:#E8F6F0';}
+    b.innerHTML='<div class="modal-head"><span class="modal-ic">'+ic(d.ic,'','#ffffff')+'</span><div><small>'+d.scope+'</small><h3>'+d.t+'</h3></div></div><div class="modal-body"><div class="det">'+d.html+'</div></div>';
+    s2.appendChild(b);
+  });
+  S.push(s2);
+
+  /* 3 — Por qué migrar */
+  const s3=wrap('1.B · Por qué migrar a Core ahora');
+  s3.appendChild(cleanClone(sub(tc,'core-why')));
+  S.push(s3);
+
+  /* 4 — Claude: hero + paso a paso + 5 cosas */
+  const s4=wrap('2. Claude en Salesforce (Beta y Gratis)','Cómo empezar · Paso a paso');
+  s4.appendChild(cleanClone(tl.querySelector('.hero')));
+  s4.appendChild(cleanClone(sub(tl,'claude-start')));
+  S.push(s4);
+
+  /* 5 — Catálogo completo */
+  const s5=wrap('2. Skills pre-diseñados y casos de uso','37 skills · 8 categorías');
+  s5.appendChild(cleanClone(sub(tl,'claude-skills')));
+  S.push(s5);
+
+  /* 6 — Contacto */
+  const s6=wrap('3. Contacto');
+  s6.appendChild(cleanClone(tk));
+  S.push(s6);
+
+  /* freeze SVG colors for the canvas renderer */
+  S.forEach(function(sec){
+    sec.querySelectorAll('svg.i').forEach(function(svg){ if(svg.getAttribute('stroke')==='currentColor'&&svg.dataset.c){svg.setAttribute('stroke',svg.dataset.c);} });
+  });
+  return S;
+}
+function freezeIconColors(){
+  document.querySelectorAll('svg.i').forEach(function(svg){
+    try{const c=getComputedStyle(svg).color; if(c)svg.dataset.c=c;}catch(e){}
+  });
+}
+const pdfBtn=document.getElementById('pdfBtn'), loader=document.getElementById('pdfLoader');
+pdfBtn.addEventListener('click',function(){
+  if(typeof window.html2pdf==='undefined'){alert('No se pudo cargar el generador de PDF (html2pdf.js). Verifica tu conexión a internet e inténtalo de nuevo.');return;}
+  const label=pdfBtn.querySelector('span'), old=label.textContent;
+  pdfBtn.disabled=true; label.textContent='Generando PDF…'; loader.classList.add('show');
+  freezeIconColors();
+  const sections=buildSections();
+  const opt={
+    margin:[10,10,12,10],
+    filename:'Salesforce-Core-Edition-y-Claude-Beta.pdf',
+    image:{type:'jpeg',quality:0.92},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false,windowWidth:1100,scrollX:0,scrollY:0},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['css','legacy'],avoid:['.card','.skill','.qs-card','.detail-block','.st-step','.value-item','.acc-head','tr','.ba-col','.pdf-h','.callout']}
+  };
+  let worker=html2pdf().set(opt).from(sections[0]).toPdf();
+  sections.slice(1).forEach(function(sec){
+    worker=worker.get('pdf').then(function(pdf){pdf.addPage();}).from(sec).toContainer().toCanvas().toPdf();
+  });
+  worker=worker.get('pdf').then(function(pdf){
+    const n=pdf.internal.getNumberOfPages(), w=pdf.internal.pageSize.getWidth(), h=pdf.internal.pageSize.getHeight();
+    for(let i=1;i<=n;i++){pdf.setPage(i);pdf.setFontSize(8);pdf.setTextColor(120);pdf.text('Salesforce Core Edition + Claude Beta  |  arozo@salesforce.com  |  '+i+' / '+n,w/2,h-5,{align:'center'});}
+  });
+  worker.save().then(done,function(err){console.error(err);alert('Ocurrió un problema al generar el PDF. Intenta de nuevo.');done();});
+  function done(){pdfBtn.disabled=false;label.textContent=old;loader.classList.remove('show');}
+});
+
+})();
+</script>
+</body>
+</html>
